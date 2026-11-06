@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { PineSprig, Star } from "@/components/Ornaments";
-import { type Feature, whatsappLink } from "@/data/site";
+import { type Feature, sedes, whatsappLink } from "@/data/site";
 
 type HeroProps = {
   feature: Feature;
@@ -9,11 +9,11 @@ type HeroProps = {
 
 export function Hero({ feature, festive = false }: HeroProps) {
   return (
-    <section id="inicio" className="relative overflow-hidden bg-forest text-cream">
+    <section id="inicio" className="relative overflow-hidden bg-plum text-cream">
       {festive && (
         <>
-          <PineSprig className="pointer-events-none absolute -left-6 bottom-0 w-44 text-gold/30 sm:w-64" />
-          <PineSprig className="pointer-events-none absolute -right-6 -top-4 w-40 rotate-180 text-gold/25 sm:w-56" />
+          <PineSprig className="pointer-events-none absolute -left-6 bottom-0 w-44 text-pine/40 sm:w-64" />
+          <PineSprig className="pointer-events-none absolute -right-6 -top-4 w-40 rotate-180 text-pine/30 sm:w-56" />
         </>
       )}
 
@@ -40,18 +40,25 @@ export function Hero({ feature, festive = false }: HeroProps) {
             </ul>
           )}
 
-          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
-            <a
-              href={whatsappLink(feature.orderMessage)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full bg-gold px-7 py-3 text-sm font-medium text-forest-deep transition-colors hover:bg-cream"
-            >
-              Pedir por WhatsApp
-            </a>
-            <p className="text-sm text-cream/70">
-              Desde <span className="font-serif text-xl text-cream">{feature.priceFrom}</span>
-            </p>
+          <p className="mt-8 text-sm text-cream/70">
+            Desde <span className="font-serif text-2xl text-cream">{feature.priceFrom}</span>
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            {sedes.map((sede, index) => (
+              <a
+                key={sede.name}
+                href={whatsappLink(feature.orderMessage, sede.whatsapp)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={
+                  index === 0
+                    ? "rounded-full bg-lavender px-6 py-3 text-sm font-medium text-plum-deep transition-colors hover:bg-cream"
+                    : "rounded-full border border-lavender/60 px-6 py-3 text-sm transition-colors hover:bg-lavender hover:text-plum-deep"
+                }
+              >
+                Pedir en {sede.name}
+              </a>
+            ))}
           </div>
         </div>
 
