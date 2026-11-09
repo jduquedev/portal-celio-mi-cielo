@@ -56,7 +56,7 @@ export function AddToCart({ product, tone = "light", compact = false }: AddToCar
         <div
           role="radiogroup"
           aria-label={`Presentación de ${product.name}`}
-          className={`grid w-full gap-0.5 rounded-2xl p-1 ${columns(product.sizes.length, compact)} ${track}`}
+          className={`grid w-full gap-0.5 rounded-2xl p-1 ${columns(product.sizes.length, compact || dark)} ${track}`}
         >
           {product.sizes.map((item, index) => {
             const selected = index === sizeIndex;

@@ -36,3 +36,62 @@ body {
     scroll-behavior: auto;
   }
 }
+
+/* Zoom muy lento de las fotos del hero (efecto Ken Burns). Movimiento constante: lineal. */
+@keyframes hero-zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+.hero-zoom {
+  animation: hero-zoom 7s linear forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-zoom {
+    animation: none;
+  }
+}
+
+/*
+ * Difuminado de las fotos del hero hacia el verde de la marca (#445854).
+ * Curva suave con varias paradas en vez de una línea recta: así no queda una
+ * franja grisácea sobre la foto. Abajo en celular, a la izquierda en escritorio.
+ */
+.hero-fade {
+  background-image: linear-gradient(
+    to top,
+    rgb(68 88 84) 0%,
+    rgb(68 88 84 / 0.96) 8%,
+    rgb(68 88 84 / 0.86) 16%,
+    rgb(68 88 84 / 0.68) 24%,
+    rgb(68 88 84 / 0.46) 32%,
+    rgb(68 88 84 / 0.26) 40%,
+    rgb(68 88 84 / 0.11) 48%,
+    rgb(68 88 84 / 0.03) 56%,
+    rgb(68 88 84 / 0) 64%
+  );
+}
+
+@media (min-width: 48rem) {
+  .hero-fade {
+    background-image:
+      linear-gradient(
+        to right,
+        rgb(68 88 84) 0%,
+        rgb(68 88 84) 6%,
+        rgb(68 88 84 / 0.92) 13%,
+        rgb(68 88 84 / 0.75) 20%,
+        rgb(68 88 84 / 0.52) 27%,
+        rgb(68 88 84 / 0.3) 34%,
+        rgb(68 88 84 / 0.14) 41%,
+        rgb(68 88 84 / 0.04) 48%,
+        rgb(68 88 84 / 0) 55%
+      ),
+      linear-gradient(to top, rgb(68 88 84 / 0.28) 0%, rgb(68 88 84 / 0) 22%);
+  }
+}

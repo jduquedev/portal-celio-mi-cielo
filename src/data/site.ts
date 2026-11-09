@@ -294,21 +294,62 @@ export function formatPrice(price: number) {
 // Producto destacado del hero
 // ---------------------------------------------------------------------------
 
+export type HeroSlide = {
+  src: string;
+  alt: string;
+  caption: string;
+  /** Clases extra para encuadrar la foto dentro del círculo. */
+  imageClassName?: string;
+};
+
 export type Feature = {
   eyebrow: string;
   title: string;
   description: string;
-  imageAlt: string;
   product: CatalogProduct;
+  /** Fotos que rotan en el círculo del hero. La primera es la principal. */
+  slides: HeroSlide[];
 };
 
+/**
+ * Para usar fotos propias (por ejemplo, las originales de Instagram), guárdalas en
+ * public/hero/ y usa su ruta aquí, por ejemplo: src: "/hero/pastores-mesa.jpg".
+ */
 export const christmasFeature: Feature = {
   eyebrow: "Edición Navidad",
   title: "Torta de Pastores",
   description:
     "La consentida de nuestra mesa de diciembre. Horneada a mano, sin conservantes y lista para compartir en familia.",
-  imageAlt: "Torta de Pastores con frutas confitadas",
   product: getProduct("torta-de-pastores"),
+  slides: [
+    {
+      src: `${uploads}/2023/12/Torta-de-Pastores.jpg`,
+      alt: "Torta de Pastores con frutas confitadas",
+      caption: "Torta de Pastores",
+      // La torta está un poco a la izquierda en la foto original.
+      imageClassName: "object-[42%_50%]",
+    },
+    {
+      src: `${uploads}/2023/12/Natilla.jpg`,
+      alt: "Natilla artesanal con buñuelos",
+      caption: "Natilla Artesanal",
+    },
+    {
+      src: `${uploads}/2023/12/Candle-cake.jpg`,
+      alt: "Candle Cake navideña",
+      caption: "Candle Cake",
+    },
+    {
+      src: `${uploads}/2023/12/Caja-de-Navidad.jpg`,
+      alt: "Caja de galletas navideñas",
+      caption: "Caja de Galletas Navideñas",
+    },
+    {
+      src: `${uploads}/2023/12/Plato-navideno.jpg`,
+      alt: "Caja navideña con postres",
+      caption: "Caja Navideña",
+    },
+  ],
 };
 
 export const defaultFeature: Feature = {
@@ -316,8 +357,14 @@ export const defaultFeature: Feature = {
   title: "El cielo en cada porción",
   description:
     "Tortas equilibradas en dulce, muy esponjosas y horneadas todos los días, sin conservantes.",
-  imageAlt: "Torta Red Velvet",
   product: getProduct("red-velvet"),
+  slides: [
+    {
+      src: `${uploads}/2023/09/redvelvet.jpg`,
+      alt: "Torta Red Velvet",
+      caption: "Red Velvet",
+    },
+  ],
 };
 
 // ---------------------------------------------------------------------------
