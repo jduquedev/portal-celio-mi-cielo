@@ -1,9 +1,12 @@
+import { FloatingCartButton } from "@/components/cart/CartButton";
+import { CartDrawer } from "@/components/cart/CartDrawer";
 import { Experiences } from "@/components/Experiences";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Menu } from "@/components/Menu";
 import { Products } from "@/components/Products";
+import { Rappi } from "@/components/Rappi";
 import { Sedes } from "@/components/Sedes";
 import { Values } from "@/components/Values";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
@@ -26,16 +29,17 @@ export default function Home() {
         />
         <Products
           id="productos"
-          eyebrow="Nuestra vitrina"
           title="Los más buscados"
+          intro="Elige el tamaño que necesitas y agrégalo a tu pedido."
           products={bestSellers}
         />
+        <Rappi />
         {christmasSeason && (
           <Products
-            eyebrow="Temporada"
             title="Para tu mesa de Navidad"
+            intro="Lo que solo preparamos en diciembre."
             products={christmasProducts}
-            className="bg-blush"
+            className="bg-lilac"
           />
         )}
         <Experiences />
@@ -44,7 +48,9 @@ export default function Home() {
         <Sedes />
       </main>
       <Footer />
+      <FloatingCartButton />
       <WhatsAppButton />
+      <CartDrawer />
     </>
   );
 }

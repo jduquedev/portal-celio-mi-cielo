@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
+/* Paleta tomada de la página actual de Celio Mi Cielo. */
 @theme inline {
-  --color-cream: #fbf7f1;
-  --color-blush: #f3ecf5;
-  --color-plum: #3f2b49;
-  --color-plum-deep: #2f1f37;
-  --color-plum-soft: #7a5b89;
-  --color-ink: #33293a;
-  --color-muted: #6f6675;
+  --color-cream: #ffffff;
+  --color-lilac: #f6f0f8;
+  --color-leaf: #445854;
+  --color-leaf-deep: #34443f;
+  --color-sage: #6daf98;
+  --color-sage-ink: #4a8670;
   --color-lavender: #d1badb;
-  --color-pine: #8fb5a2;
-  --color-gold: #c9a96e;
-  --font-sans: var(--font-inter);
-  --font-serif: var(--font-cormorant);
+  --color-ink: #444444;
+  --color-muted: #666666;
+  --font-sans: var(--font-poppins);
+  --font-display: var(--font-montserrat);
 }
 
 html {
@@ -22,7 +22,13 @@ html {
 body {
   background: var(--color-cream);
   color: var(--color-ink);
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-poppins), system-ui, sans-serif;
+}
+
+/* Títulos en Montserrat ExtraBold. */
+.font-display {
+  font-weight: 800;
+  letter-spacing: -0.01em;
 }
 
 @media (prefers-reduced-motion: reduce) {

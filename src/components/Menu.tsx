@@ -1,30 +1,28 @@
+import { AddToCart } from "@/components/cart/AddToCart";
 import { menu, sedes } from "@/data/site";
 
 export function Menu() {
   return (
-    <section id="menu" className="mx-auto w-full max-w-6xl px-4 py-20 sm:px-6 md:py-28">
-      <div className="text-center">
-        <p className="text-xs uppercase tracking-[0.3em] text-plum-soft">La carta</p>
-        <h2 className="mt-4 font-serif text-4xl font-medium text-plum sm:text-5xl">Nuestro menú</h2>
-        <p className="mt-4 text-sm text-muted">Precios desde la porción o presentación más pequeña.</p>
+    <section id="menu" className="mx-auto w-full max-w-6xl scroll-mt-24 px-4 py-20 sm:px-6 md:py-28">
+      <div className="max-w-xl">
+        <h2 className="font-display text-3xl text-leaf sm:text-4xl">Nuestro menú</h2>
+        <p className="mt-3 text-base text-muted">
+          Toda la carta de tortas, postres y galletas, con el precio de cada tamaño.
+        </p>
       </div>
 
-      <div className="mt-14 grid gap-12 md:grid-cols-3">
+      <div className="mt-12 grid gap-x-10 gap-y-12 md:grid-cols-3">
         {menu.map((group) => (
           <div key={group.title}>
-            <h3 className="border-b border-gold/50 pb-3 font-serif text-3xl text-plum">
-              {group.title}
-            </h3>
-            <ul className="mt-4 space-y-4">
+            <h3 className="font-display text-xl text-leaf">{group.title}</h3>
+            <ul className="mt-4 divide-y divide-leaf/10 border-t border-leaf/10">
               {group.items.map((item) => (
-                <li key={item.name} className="flex items-baseline justify-between gap-4 text-sm">
-                  <span>
-                    {item.name}
-                    {item.note && (
-                      <span className="mt-0.5 block text-xs text-plum-soft">{item.note}</span>
-                    )}
-                  </span>
-                  <span className="shrink-0 text-muted">{item.price}</span>
+                <li key={item.id} className="py-4">
+                  <p className="text-sm font-semibold text-leaf">{item.name}</p>
+                  {item.note && <p className="text-xs text-sage-ink">{item.note}</p>}
+                  <div className="mt-2.5">
+                    <AddToCart product={item} compact />
+                  </div>
                 </li>
               ))}
             </ul>
@@ -32,21 +30,23 @@ export function Menu() {
         ))}
       </div>
 
-      <div className="mt-14 flex flex-wrap items-center justify-center gap-3 text-sm">
-        <span className="w-full text-center text-muted sm:w-auto">
-          Café, sándwiches y más en la carta completa:
-        </span>
-        {sedes.map((sede) => (
-          <a
-            key={sede.name}
-            href={sede.menu}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-full border border-plum/30 px-5 py-2 text-plum transition-colors hover:bg-plum hover:text-cream"
-          >
-            Menú {sede.name}
-          </a>
-        ))}
+      <div className="mt-14 flex flex-col items-start gap-3 rounded-3xl bg-lilac p-6 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-leaf">
+          ¿Buscas café, sándwiches o almuerzo? Están en la carta de cada sede.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {sedes.map((sede) => (
+            <a
+              key={sede.name}
+              href={sede.menu}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-leaf transition-colors hover:bg-leaf hover:text-white"
+            >
+              Carta {sede.name}
+            </a>
+          ))}
+        </div>
       </div>
     </section>
   );
