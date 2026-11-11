@@ -1,4 +1,7 @@
+import { AddedToast } from "@/components/cart/AddedToast";
 import { FloatingCartButton } from "@/components/cart/CartButton";
+import { Corporate } from "@/components/Corporate";
+import { HowToOrder } from "@/components/HowToOrder";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { Experiences } from "@/components/Experiences";
 import { Footer } from "@/components/Footer";
@@ -42,7 +45,9 @@ export default function Home() {
             className="bg-lilac"
           />
         )}
+        <HowToOrder />
         <Experiences />
+        <Corporate />
         <Menu />
         <Values />
         <Sedes />
@@ -51,6 +56,7 @@ export default function Home() {
       <FloatingCartButton />
       <WhatsAppButton />
       <CartDrawer />
+      <AddedToast />
     </>
   );
 }

@@ -19,6 +19,8 @@ export type Sede = {
   menu: string;
   /** Enlace a la tienda de esta sede en Rappi. Vacío = no se muestra. */
   rappi: string;
+  /** Si desde esta sede salen domicilios. Si no, solo se puede recoger ahí. */
+  delivers: boolean;
 };
 
 export const sedes: Sede[] = [
@@ -30,6 +32,7 @@ export const sedes: Sede[] = [
     maps: "https://www.google.com/maps/search/?api=1&query=La+Leyenda+Mall+Cali",
     menu: `${uploads}/2024/10/MENU-CIUDAD-JARDIN-comprimido.pdf`,
     rappi: "", // TODO: pegar aquí el enlace de Rappi de Ciudad Jardín
+    delivers: false,
   },
   {
     name: "Aquarela",
@@ -39,6 +42,7 @@ export const sedes: Sede[] = [
     maps: "https://maps.app.goo.gl/iPg41T4MiFUTNf2z9",
     menu: `${uploads}/2024/10/MENU-AQUARELA.pdf`,
     rappi: "https://www.rappi.com.co/restaurantes/900409236-celio-mi-cielo-reposteria",
+    delivers: true,
   },
 ];
 

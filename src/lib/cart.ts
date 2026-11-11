@@ -10,10 +10,19 @@ export type CartLine = {
   image?: string;
 };
 
-type CartState = { lines: CartLine[]; open: boolean };
+/** Aviso que se muestra justo después de agregar un producto. */
+export type AddedNotice = {
+  id: number;
+  name: string;
+  size: string;
+  image?: string;
+};
+
+type CartState = { lines: CartLine[]; open: boolean; notice: AddedNotice | null };
 
 const STORAGE_KEY = "celio-cart-v1";
-const serverState: CartState = { lines: [], open: false };
+const serverState: CartState = { lines: [], open: false, notice: null };
+let noticeId = 0;
 
 let state: CartState = serverState;
 let hydrated = false;
@@ -86,7 +95,13 @@ export function addToCart(product: CatalogProduct, size: Size, quantity = 1) {
           image: product.image,
         },
       ];
-  setState({ ...state, lines });
+  noticeId += 1;
+  const notice = { id: noticeId, name: product.name, size: size.label, image: product.image };
+  setState({ ...state, lines, notice });
+}
+
+export function dismissNotice() {
+  if (state.notice) setState({ ...state, notice: null });
 }
 
 export function changeQuantity(id: string, delta: number) {
@@ -105,7 +120,8 @@ export function clearCart() {
 }
 
 export function setCartOpen(open: boolean) {
-  setState({ ...state, open });
+  // Al abrir el carrito, el aviso de "agregado" ya no hace falta.
+  setState({ ...state, open, notice: open ? null : state.notice });
 }
 
 export function cartCount(lines: CartLine[]) {

@@ -47,15 +47,51 @@ const deliveryOptions: { value: Delivery; label: string; detail: string }[] = [
   { value: "domicilio", label: "Domicilio", detail: "Te lo llevamos" },
 ];
 
+type Customer = { name: string; phone: string };
+
+const CUSTOMER_KEY = "celio-customer-v1";
+
+/** Datos del cliente guardados en su navegador para el próximo pedido. */
+function readCustomer(): Customer {
+  if (typeof window === "undefined") return { name: "", phone: "" };
+  try {
+    const saved: unknown = JSON.parse(window.localStorage.getItem(CUSTOMER_KEY) ?? "null");
+    if (saved && typeof saved === "object") {
+      const { name, phone } = saved as Record<string, unknown>;
+      return {
+        name: typeof name === "string" ? name : "",
+        phone: typeof phone === "string" ? phone : "",
+      };
+    }
+  } catch {
+    // Sin almacenamiento: los campos empiezan vacíos.
+  }
+  return { name: "", phone: "" };
+}
+
+function saveCustomer(customer: Customer) {
+  try {
+    window.localStorage.setItem(CUSTOMER_KEY, JSON.stringify(customer));
+  } catch {
+    // No es grave: solo no se recordarán para la próxima vez.
+  }
+}
+
+/** Celular colombiano: 10 dígitos, opcionalmente con +57 o espacios. */
+function phoneDigits(phone: string) {
+  return phone.replace(/\D/g, "").replace(/^57(?=\d{10}$)/, "");
+}
+
 type OrderDetails = {
   lines: CartLine[];
   sedeName: string;
   date: string;
   delivery: Delivery;
   address: string;
+  customer: Customer;
 };
 
-function orderMessage({ lines, sedeName, date, delivery, address }: OrderDetails) {
+function orderMessage({ lines, sedeName, date, delivery, address, customer }: OrderDetails) {
   const items = lines.map(
     (line) =>
       `• ${line.quantity} x ${line.name} (${line.size}): ${formatPrice(line.price * line.quantity)}`,
@@ -67,6 +103,8 @@ function orderMessage({ lines, sedeName, date, delivery, address }: OrderDetails
   return [
     "Hola Celio mi Cielo! Quisiera hacer este pedido:",
     "",
+    `Nombre: ${customer.name.trim()}`,
+    `Celular: ${customer.phone.trim()}`,
     ...deliveryLines,
     `Fecha: ${formatOrderDate(date)}`,
     "",
@@ -105,12 +143,17 @@ function DeliveryIcon({ kind }: { kind: Delivery }) {
 
 export function CartDrawer() {
   const { lines, open } = useCart();
-  const [sedeIndex, setSedeIndex] = useState(0);
+  const [sedeName, setSedeName] = useState(sedes[0].name);
   const [date, setDate] = useState("");
   const [delivery, setDelivery] = useState<Delivery>("recoger");
   const [address, setAddress] = useState("");
+  // Los campos solo aparecen con productos en el carrito, que existen únicamente
+  // en el navegador; por eso leer lo guardado aquí no desajusta el prerender.
+  const [customer, setCustomer] = useState<Customer>(readCustomer);
   const dialog = useRef<HTMLDialogElement>(null);
-  const sede = sedes[sedeIndex];
+  // Para recoger sirven todas las sedes; para domicilio, solo las que despachan.
+  const availableSedes = delivery === "recoger" ? sedes : sedes.filter((option) => option.delivers);
+  const sede = availableSedes.find((option) => option.name === sedeName) ?? availableSedes[0];
   const total = cartTotal(lines);
   const count = cartCount(lines);
   // El carrito solo tiene productos en el navegador, así que la fecha actual
@@ -118,7 +161,15 @@ export function CartDrawer() {
   const minDate = lines.length > 0 ? earliestOrderDate() : "";
   const dateIsValid = date !== "" && date >= minDate;
   const addressIsValid = delivery === "recoger" || address.trim().length >= 5;
-  const canSend = dateIsValid && addressIsValid;
+  const nameIsValid = customer.name.trim().length >= 2;
+  const phoneIsValid = phoneDigits(customer.phone).length === 10;
+  const canSend = dateIsValid && addressIsValid && nameIsValid && phoneIsValid;
+
+  function updateCustomer(field: keyof Customer, value: string) {
+    const next = { ...customer, [field]: value };
+    setCustomer(next);
+    saveCustomer(next);
+  }
 
   useEffect(() => {
     const element = dialog.current;
@@ -257,32 +308,45 @@ export function CartDrawer() {
                 </div>
               </fieldset>
 
-              <fieldset className="mt-8">
-                <legend className="font-display text-base text-leaf">
-                  {delivery === "recoger" ? "¿En qué sede lo recoges?" : "¿Qué sede te queda más cerca?"}
-                </legend>
-                <div className="mt-3 grid grid-cols-2 gap-2">
-                  {sedes.map((option, index) => {
-                    const selected = index === sedeIndex;
-                    return (
-                      <label key={option.name} className={choiceClass(selected)}>
-                        <input
-                          type="radio"
-                          name="sede"
-                          value={index}
-                          checked={selected}
-                          onChange={() => setSedeIndex(index)}
-                          className="sr-only"
-                        />
-                        <span className="block text-sm font-semibold">{option.name}</span>
-                        <span className={`block text-xs ${selected ? "text-white/75" : "text-muted"}`}>
-                          {option.place}
-                        </span>
-                      </label>
-                    );
-                  })}
-                </div>
-              </fieldset>
+              {availableSedes.length > 1 ? (
+                <fieldset className="mt-8">
+                  <legend className="font-display text-base text-leaf">
+                    {delivery === "recoger" ? "¿En qué sede lo recoges?" : "¿Qué sede te queda más cerca?"}
+                  </legend>
+                  <div className="mt-3 grid grid-cols-2 gap-2">
+                    {availableSedes.map((option) => {
+                      const selected = option.name === sede.name;
+                      return (
+                        <label key={option.name} className={choiceClass(selected)}>
+                          <input
+                            type="radio"
+                            name="sede"
+                            value={option.name}
+                            checked={selected}
+                            onChange={() => setSedeName(option.name)}
+                            className="sr-only"
+                          />
+                          <span className="block text-sm font-semibold">{option.name}</span>
+                          <span className={`block text-xs ${selected ? "text-white/75" : "text-muted"}`}>
+                            {option.place}
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </fieldset>
+              ) : (
+                <p className="mt-4 flex items-start gap-2 rounded-2xl bg-cream px-4 py-3 text-xs leading-5 text-muted ring-1 ring-leaf/10">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-sage-ink">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 11v5M12 8h.01" strokeLinecap="round" />
+                  </svg>
+                  <span>
+                    Los domicilios salen de nuestra sede{" "}
+                    <strong className="font-semibold text-leaf">{sede.name}</strong> ({sede.place}).
+                  </span>
+                </p>
+              )}
 
               {delivery === "domicilio" && (
                 <div className="mt-8">
@@ -320,6 +384,51 @@ export function CartDrawer() {
                   labelledBy="order-date-label"
                 />
               </div>
+
+              <fieldset className="mt-8">
+                <legend className="font-display text-base text-leaf">Tus datos</legend>
+                <p className="mb-3 text-xs text-muted">
+                  Para saber a nombre de quién va el pedido y poder contactarte.
+                </p>
+                <div className="space-y-3">
+                  <div>
+                    <label htmlFor="customer-name" className="text-xs font-semibold text-leaf">
+                      Nombre
+                    </label>
+                    <input
+                      id="customer-name"
+                      type="text"
+                      value={customer.name}
+                      onChange={(event) => updateCustomer("name", event.target.value)}
+                      autoComplete="name"
+                      placeholder="¿A nombre de quién?"
+                      className="mt-1 w-full rounded-2xl bg-cream px-4 py-3 text-base text-leaf ring-1 ring-leaf/15 transition-shadow placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-sage sm:text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="customer-phone" className="text-xs font-semibold text-leaf">
+                      Celular (WhatsApp)
+                    </label>
+                    <input
+                      id="customer-phone"
+                      type="tel"
+                      inputMode="tel"
+                      value={customer.phone}
+                      onChange={(event) => updateCustomer("phone", event.target.value)}
+                      autoComplete="tel"
+                      placeholder="300 123 4567"
+                      aria-invalid={customer.phone !== "" && !phoneIsValid}
+                      aria-describedby="customer-phone-hint"
+                      className="mt-1 w-full rounded-2xl bg-cream px-4 py-3 text-base text-leaf ring-1 ring-leaf/15 transition-shadow placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-sage aria-invalid:ring-red-400 sm:text-sm"
+                    />
+                    <p id="customer-phone-hint" className="mt-1 text-xs text-muted">
+                      {customer.phone !== "" && !phoneIsValid
+                        ? "Escribe los 10 dígitos de tu celular."
+                        : "Te escribimos a este número para confirmar."}
+                    </p>
+                  </div>
+                </div>
+              </fieldset>
             </div>
 
             <footer className="border-t border-leaf/10 bg-cream px-6 pb-6 pt-4">
@@ -334,7 +443,9 @@ export function CartDrawer() {
                   ? "Elige el día para enviar tu pedido."
                   : !addressIsValid
                     ? "Escribe la dirección para el domicilio."
-                    : delivery === "recoger"
+                    : !nameIsValid || !phoneIsValid
+                      ? "Completa tu nombre y celular para enviar."
+                      : delivery === "recoger"
                       ? `Lo recoges el ${formatOrderDate(date)} en ${sede.name}.`
                       : `Te lo llevamos el ${formatOrderDate(date)}.`}
               </p>
@@ -342,7 +453,7 @@ export function CartDrawer() {
               {canSend ? (
                 <a
                   href={whatsappLink(
-                    orderMessage({ lines, sedeName: sede.name, date, delivery, address }),
+                    orderMessage({ lines, sedeName: sede.name, date, delivery, address, customer }),
                     sede.whatsapp,
                   )}
                   target="_blank"
