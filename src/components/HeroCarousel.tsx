@@ -7,19 +7,17 @@ import type { HeroSlide as Slide } from "@/data/site";
 /** Tiempo que cada foto queda en pantalla, en milisegundos. */
 const SLIDE_MS = 5500;
 
-const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
-
-function subscribeReducedMotion(callback: () => void) {
-  const media = window.matchMedia(reducedMotionQuery);
-  media.addEventListener("change", callback);
-  return () => media.removeEventListener("change", callback);
+function subscribeVisibility(callback: () => void) {
+  document.addEventListener("visibilitychange", callback);
+  return () => document.removeEventListener("visibilitychange", callback);
 }
 
-function usePrefersReducedMotion() {
+/** true mientras la pestaña está a la vista. */
+function usePageVisible() {
   return useSyncExternalStore(
-    subscribeReducedMotion,
-    () => window.matchMedia(reducedMotionQuery).matches,
-    () => false,
+    subscribeVisibility,
+    () => document.visibilityState === "visible",
+    () => true,
   );
 }
 
@@ -34,26 +32,31 @@ type HeroCarouselProps = {
  * difuminan hacia el color del hero para que el texto se lea sin cajas.
  */
 export function HeroCarousel({ slides, className }: HeroCarouselProps) {
-  const [index, setIndex] = useState(0);
-  const [previous, setPrevious] = useState<number | null>(null);
+  const [{ index, previous }, setSlide] = useState<{ index: number; previous: number | null }>({
+    index: 0,
+    previous: null,
+  });
   const [paused, setPaused] = useState(false);
-  const reduceMotion = usePrefersReducedMotion();
-  const autoplay = slides.length > 1 && !paused && !reduceMotion;
+  const pageVisible = usePageVisible();
+  // Con "reducir movimiento" sigue avanzando, pero sin zoom y con un fundido corto.
+  // Con la pestaña oculta se detiene, y al volver retoma sola.
+  const autoplay = slides.length > 1 && !paused && pageVisible;
 
   function goTo(next: number) {
-    setPrevious(index);
-    setIndex(next);
+    setSlide((current) =>
+      current.index === next ? current : { index: next, previous: current.index },
+    );
   }
 
   useEffect(() => {
     if (!autoplay) return;
     const timer = setTimeout(() => {
-      // Si la pestaña no está visible, no avanza: así no se acumulan cambios.
-      if (document.visibilityState === "visible") goTo((index + 1) % slides.length);
+      setSlide((current) => ({
+        index: (current.index + 1) % slides.length,
+        previous: current.index,
+      }));
     }, SLIDE_MS);
     return () => clearTimeout(timer);
-    // goTo depende de index, que ya está en la lista.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoplay, index, slides.length]);
 
   return (
@@ -81,6 +84,8 @@ export function HeroCarousel({ slides, className }: HeroCarouselProps) {
                 fill
                 sizes="(min-width: 768px) 70vw, 100vw"
                 preload={i === 0}
+                // Todas cargan desde el inicio para que ningún cambio muestre un hueco.
+                loading={i === 0 ? undefined : "eager"}
                 className={`object-cover ${slide.imageClassName ?? ""}`}
               />
             </div>
@@ -114,18 +119,16 @@ export function HeroCarousel({ slides, className }: HeroCarouselProps) {
               </button>
             ))}
           </div>
-          {!reduceMotion && (
-            <button
-              type="button"
-              onClick={() => setPaused((value) => !value)}
-              aria-label={paused ? "Reanudar fotos" : "Pausar fotos"}
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 transition-colors hover:bg-white/25 focus-visible:outline-2 focus-visible:outline-lavender"
-            >
-              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="h-3 w-3">
-                {paused ? <path d="M8 5.5v13l10.5-6.5z" /> : <path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" />}
-              </svg>
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => setPaused((value) => !value)}
+            aria-label={paused ? "Reanudar fotos" : "Pausar fotos"}
+            className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 transition-colors hover:bg-white/25 focus-visible:outline-2 focus-visible:outline-lavender"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="h-3 w-3">
+              {paused ? <path d="M8 5.5v13l10.5-6.5z" /> : <path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" />}
+            </svg>
+          </button>
         </div>
       )}
     </div>

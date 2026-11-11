@@ -14,9 +14,6 @@ const links = [
 export function Header() {
   return (
     <>
-      <p className="bg-sage px-4 py-2 text-center text-xs font-semibold text-white">
-        Recomendamos realizar tu pedido con al menos 2 días de anticipación
-      </p>
       <header className="sticky top-0 z-30 bg-lavender/90 text-leaf backdrop-blur-md supports-[not(backdrop-filter:blur(1px))]:bg-lavender">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-4 py-3 sm:px-6">
           <a href="#inicio" aria-label="Celio Mi Cielo, inicio">
