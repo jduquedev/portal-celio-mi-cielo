@@ -1,4 +1,4 @@
-import { sedes, whatsappLink } from "@/data/site";
+import { formatHour, sedes, whatsappLink } from "@/data/site";
 
 export function Sedes() {
   return (
@@ -18,6 +18,13 @@ export function Sedes() {
               {sede.place}
               <br />
               {sede.local}
+            </p>
+            <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1 text-xs font-semibold text-leaf">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true" className="h-3.5 w-3.5 text-sage-ink">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5l3 2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {formatHour(sede.opens)} a {formatHour(sede.closes)}
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3 text-sm">
               <a

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect } from "react";
+import { findProduct } from "@/data/site";
 import { cartCount, dismissNotice, setCartOpen, useCart } from "@/lib/cart";
 
 /** Tiempo que el aviso queda en pantalla, en milisegundos. */
@@ -22,7 +23,8 @@ export function AddedToast() {
 
   if (!notice) return null;
   const count = cartCount(lines);
-  const image = notice.image;
+  const product = findProduct(notice.productId);
+  const image = product?.image ?? notice.image;
 
   return (
     <div
@@ -33,7 +35,9 @@ export function AddedToast() {
     >
       <div className="flex items-center gap-3">
         <div className="relative h-14 w-12 shrink-0 overflow-hidden rounded-t-full rounded-b-xl bg-lavender">
-          {image && <Image src={image} alt="" fill sizes="48px" className="object-cover" />}
+          {image && (
+            <Image src={image} alt="" fill sizes="48px" className={`object-cover ${product?.imagePosition ?? ""}`} />
+          )}
         </div>
         <div className="min-w-0 flex-1">
           <p className="flex items-center gap-1.5 text-xs font-semibold text-sage-ink">

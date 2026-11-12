@@ -13,6 +13,7 @@ export type CartLine = {
 /** Aviso que se muestra justo después de agregar un producto. */
 export type AddedNotice = {
   id: number;
+  productId: string;
   name: string;
   size: string;
   image?: string;
@@ -96,7 +97,13 @@ export function addToCart(product: CatalogProduct, size: Size, quantity = 1) {
         },
       ];
   noticeId += 1;
-  const notice = { id: noticeId, name: product.name, size: size.label, image: product.image };
+  const notice = {
+    id: noticeId,
+    productId: product.id,
+    name: product.name,
+    size: size.label,
+    image: product.image,
+  };
   setState({ ...state, lines, notice });
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { type CSSProperties, useEffect, useState, useSyncExternalStore } from "react";
 import type { HeroSlide as Slide } from "@/data/site";
 
 /** Tiempo que cada foto queda en pantalla, en milisegundos. */
@@ -77,24 +77,53 @@ export function HeroCarousel({ slides, className }: HeroCarouselProps) {
               active ? "opacity-100" : "opacity-0"
             }`}
           >
-            <div className={`absolute inset-0 ${zooming ? "hero-zoom" : ""}`}>
-              <Image
-                src={slide.src}
-                alt={slide.alt}
-                fill
-                sizes="(min-width: 768px) 70vw, 100vw"
-                preload={i === 0}
-                // Todas cargan desde el inicio para que ningún cambio muestre un hueco.
-                loading={i === 0 ? undefined : "eager"}
-                className={`object-cover ${slide.imageClassName ?? ""}`}
-              />
+            {/*
+              En escritorio, las fotos normales ocupan el lado derecho; las panorámicas
+              (fullBleed) cubren todo el ancho porque ya traen espacio libre para el texto.
+            */}
+            <div
+              className={`absolute inset-0 overflow-hidden ${slide.fullBleed ? "" : "md:left-[30%]"}`}
+            >
+              {/*
+                Panorámica en escritorio: ocupa todo el alto del hero con la proporción
+                original de la foto, pegada a la derecha. Si es más ancha que la pantalla,
+                se recorta por la izquierda, que en estas fotos es fondo liso.
+              */}
+              <div
+                className={
+                  slide.fullBleed
+                    ? "absolute inset-0 md:left-auto md:h-full md:w-auto md:aspect-(--photo-ratio)"
+                    : "absolute inset-0"
+                }
+                style={
+                  slide.fullBleed
+                    ? ({ "--photo-ratio": String(slide.ratio ?? 2.5) } as CSSProperties)
+                    : undefined
+                }
+              >
+                <div
+                  className={`absolute inset-0 ${slide.fullBleed ? "hero-panorama" : ""} ${
+                    zooming ? "hero-zoom" : ""
+                  }`}
+                >
+                  <Image
+                    src={slide.src}
+                    alt={slide.alt}
+                    fill
+                    sizes={slide.fullBleed ? "(min-width: 768px) 80vw, 100vw" : "(min-width: 768px) 70vw, 100vw"}
+                    preload={i === 0}
+                    // Todas cargan desde el inicio para que ningún cambio muestre un hueco.
+                    loading={i === 0 ? undefined : "eager"}
+                    className={`object-cover ${slide.imageClassName ?? ""}`}
+                  />
+                </div>
+              </div>
+              {/* Difuminado hacia el color del hero: abajo en celular, a la izquierda en escritorio. */}
+              <div aria-hidden="true" className="hero-fade pointer-events-none absolute inset-0" />
             </div>
           </div>
         );
       })}
-
-      {/* Difuminados hacia el color del hero: abajo en celular, a la izquierda en escritorio. */}
-      <div aria-hidden="true" className="hero-fade pointer-events-none absolute inset-0" />
 
       {slides.length > 1 && (
         <div className="absolute right-4 top-4 flex items-center gap-3 rounded-full bg-leaf-deep/45 py-1.5 pl-4 pr-1.5 text-white backdrop-blur-md md:bottom-8 md:right-28 md:top-auto">

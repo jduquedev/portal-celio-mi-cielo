@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 type OrnamentProps = { className?: string };
 
 /** Flor de línea fina inspirada en el sello de la marca. */
@@ -62,9 +64,9 @@ export function PineSprig({ className }: OrnamentProps) {
   );
 }
 
-export function Star({ className }: OrnamentProps) {
+export function Star({ className, style }: OrnamentProps & { style?: CSSProperties }) {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className}>
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className} style={style}>
       <path d="M12 0c.8 7.4 4.6 11.2 12 12-7.4.8-11.2 4.6-12 12-.8-7.4-4.6-11.2-12-12 7.4-.8 11.2-4.6 12-12z" />
     </svg>
   );

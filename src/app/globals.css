@@ -43,7 +43,7 @@ body {
     transform: scale(1);
   }
   to {
-    transform: scale(1.08);
+    transform: scale(1.05);
   }
 }
 
@@ -93,5 +93,15 @@ body {
         rgb(68 88 84 / 0) 55%
       ),
       linear-gradient(to top, rgb(68 88 84 / 0.28) 0%, rgb(68 88 84 / 0) 22%);
+  }
+}
+
+/*
+ * Fotos panorámicas del hero (fullBleed) en escritorio: ocupan todo el alto y solo
+ * se desvanece el borde izquierdo, para que se funda con el verde del hero.
+ */
+@media (min-width: 48rem) {
+  .hero-panorama {
+    mask-image: linear-gradient(to right, transparent 0%, #000 22%);
   }
 }

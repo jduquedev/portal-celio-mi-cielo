@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
 import { Montserrat, Poppins } from "next/font/google";
+import { AddedToast } from "@/components/cart/AddedToast";
+import { FloatingCartButton } from "@/components/cart/CartButton";
+import { CartDrawer } from "@/components/cart/CartDrawer";
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { ScrollToHash } from "@/components/ScrollToHash";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -26,7 +33,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="es"
       className={`${poppins.variable} ${montserrat.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <Header />
+        <main className="flex-1">{children}</main>
+        <Footer />
+        <FloatingCartButton />
+        <WhatsAppButton />
+        <CartDrawer />
+        <AddedToast />
+        <ScrollToHash />
+      </body>
     </html>
   );
 }

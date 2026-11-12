@@ -3,7 +3,14 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { DatePicker, fromIso, toIso } from "@/components/cart/DatePicker";
-import { findProduct, formatPrice, sedes, whatsappLink } from "@/data/site";
+import {
+  type DeliveryZone,
+  deliveryZones,
+  findProduct,
+  formatPrice,
+  sedes,
+  whatsappLink,
+} from "@/data/site";
 import {
   type CartLine,
   cartCount,
@@ -14,10 +21,12 @@ import {
   setCartOpen,
   useCart,
 } from "@/lib/cart";
+import { type Customer, phoneDigits, readCustomer, saveCustomer } from "@/lib/customer";
 
 /** La foto sale del catálogo, así funciona también con carritos guardados antes. */
 function lineImage(line: CartLine) {
-  return findProduct(line.id.split(":")[0])?.image ?? line.image;
+  const product = findProduct(line.id.split(":")[0]);
+  return { src: product?.image ?? line.image, position: product?.imagePosition ?? "" };
 }
 
 /** Días mínimos de anticipación para un pedido. */
@@ -47,40 +56,6 @@ const deliveryOptions: { value: Delivery; label: string; detail: string }[] = [
   { value: "domicilio", label: "Domicilio", detail: "Te lo llevamos" },
 ];
 
-type Customer = { name: string; phone: string };
-
-const CUSTOMER_KEY = "celio-customer-v1";
-
-/** Datos del cliente guardados en su navegador para el próximo pedido. */
-function readCustomer(): Customer {
-  if (typeof window === "undefined") return { name: "", phone: "" };
-  try {
-    const saved: unknown = JSON.parse(window.localStorage.getItem(CUSTOMER_KEY) ?? "null");
-    if (saved && typeof saved === "object") {
-      const { name, phone } = saved as Record<string, unknown>;
-      return {
-        name: typeof name === "string" ? name : "",
-        phone: typeof phone === "string" ? phone : "",
-      };
-    }
-  } catch {
-    // Sin almacenamiento: los campos empiezan vacíos.
-  }
-  return { name: "", phone: "" };
-}
-
-function saveCustomer(customer: Customer) {
-  try {
-    window.localStorage.setItem(CUSTOMER_KEY, JSON.stringify(customer));
-  } catch {
-    // No es grave: solo no se recordarán para la próxima vez.
-  }
-}
-
-/** Celular colombiano: 10 dígitos, opcionalmente con +57 o espacios. */
-function phoneDigits(phone: string) {
-  return phone.replace(/\D/g, "").replace(/^57(?=\d{10}$)/, "");
-}
 
 type OrderDetails = {
   lines: CartLine[];
@@ -88,18 +63,34 @@ type OrderDetails = {
   date: string;
   delivery: Delivery;
   address: string;
+  zone: DeliveryZone | undefined;
   customer: Customer;
 };
 
-function orderMessage({ lines, sedeName, date, delivery, address, customer }: OrderDetails) {
+function orderMessage({ lines, sedeName, date, delivery, address, zone, customer }: OrderDetails) {
   const items = lines.map(
     (line) =>
       `• ${line.quantity} x ${line.name} (${line.size}): ${formatPrice(line.price * line.quantity)}`,
   );
+  const subtotal = cartTotal(lines);
+  const shipping = delivery === "domicilio" && zone ? zone.price : 0;
   const deliveryLines =
     delivery === "recoger"
       ? [`Entrega: Recoger en tienda (${sedeName})`]
-      : ["Entrega: Domicilio", `Dirección: ${address.trim()}`, `Sede que despacha: ${sedeName}`];
+      : [
+          "Entrega: Domicilio",
+          `Zona: ${zone?.name ?? ""}`,
+          `Dirección: ${address.trim()}`,
+          `Sede que despacha: ${sedeName}`,
+        ];
+  const totals =
+    shipping > 0
+      ? [
+          `Productos: ${formatPrice(subtotal)}`,
+          `Domicilio (${zone?.name}): ${formatPrice(shipping)}`,
+          `Total: ${formatPrice(subtotal + shipping)}`,
+        ]
+      : [`Total: ${formatPrice(subtotal)}`];
   return [
     "Hola Celio mi Cielo! Quisiera hacer este pedido:",
     "",
@@ -110,8 +101,7 @@ function orderMessage({ lines, sedeName, date, delivery, address, customer }: Or
     "",
     ...items,
     "",
-    `Total productos: ${formatPrice(cartTotal(lines))}`,
-    ...(delivery === "domicilio" ? ["(Quedo atento al valor del domicilio)"] : []),
+    ...totals,
   ].join("\n");
 }
 
@@ -147,6 +137,7 @@ export function CartDrawer() {
   const [date, setDate] = useState("");
   const [delivery, setDelivery] = useState<Delivery>("recoger");
   const [address, setAddress] = useState("");
+  const [zoneId, setZoneId] = useState("");
   // Los campos solo aparecen con productos en el carrito, que existen únicamente
   // en el navegador; por eso leer lo guardado aquí no desajusta el prerender.
   const [customer, setCustomer] = useState<Customer>(readCustomer);
@@ -154,16 +145,20 @@ export function CartDrawer() {
   // Para recoger sirven todas las sedes; para domicilio, solo las que despachan.
   const availableSedes = delivery === "recoger" ? sedes : sedes.filter((option) => option.delivers);
   const sede = availableSedes.find((option) => option.name === sedeName) ?? availableSedes[0];
-  const total = cartTotal(lines);
+  const zone = deliveryZones.find((option) => option.id === zoneId);
+  const subtotal = cartTotal(lines);
+  const shipping = delivery === "domicilio" && zone ? zone.price : 0;
+  const total = subtotal + shipping;
   const count = cartCount(lines);
   // El carrito solo tiene productos en el navegador, así que la fecha actual
   // nunca se lee durante el prerender del servidor.
   const minDate = lines.length > 0 ? earliestOrderDate() : "";
   const dateIsValid = date !== "" && date >= minDate;
+  const zoneIsValid = delivery === "recoger" || zone !== undefined;
   const addressIsValid = delivery === "recoger" || address.trim().length >= 5;
   const nameIsValid = customer.name.trim().length >= 2;
   const phoneIsValid = phoneDigits(customer.phone).length === 10;
-  const canSend = dateIsValid && addressIsValid && nameIsValid && phoneIsValid;
+  const canSend = dateIsValid && zoneIsValid && addressIsValid && nameIsValid && phoneIsValid;
 
   function updateCustomer(field: keyof Customer, value: string) {
     const next = { ...customer, [field]: value };
@@ -233,8 +228,14 @@ export function CartDrawer() {
                 {lines.map((line) => (
                   <li key={line.id} className="flex gap-4 rounded-3xl bg-lilac p-3">
                     <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-t-full rounded-b-2xl bg-lavender">
-                      {lineImage(line) && (
-                        <Image src={lineImage(line)!} alt="" fill sizes="64px" className="object-cover" />
+                      {lineImage(line).src && (
+                        <Image
+                          src={lineImage(line).src!}
+                          alt=""
+                          fill
+                          sizes="64px"
+                          className={`object-cover ${lineImage(line).position}`}
+                        />
                       )}
                     </div>
                     <div className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
@@ -349,13 +350,55 @@ export function CartDrawer() {
               )}
 
               {delivery === "domicilio" && (
+                <fieldset className="mt-8">
+                  <legend className="font-display text-base text-leaf">¿En qué zona de Cali?</legend>
+                  <p className="mb-3 text-xs text-muted">El valor del domicilio depende de la zona.</p>
+                  <div className="space-y-2">
+                    {deliveryZones.map((option) => {
+                      const selected = option.id === zoneId;
+                      return (
+                        <label
+                          key={option.id}
+                          className={`flex cursor-pointer items-center justify-between gap-3 rounded-2xl px-4 py-3 transition-[background-color,box-shadow] duration-200 has-focus-visible:outline-2 has-focus-visible:outline-sage ${
+                            selected ? "bg-leaf text-white" : "bg-cream text-leaf ring-1 ring-leaf/15 hover:ring-leaf/40"
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="zona"
+                            value={option.id}
+                            checked={selected}
+                            onChange={() => setZoneId(option.id)}
+                            className="sr-only"
+                          />
+                          <span className="flex items-center gap-3">
+                            <span
+                              aria-hidden="true"
+                              className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full ring-2 ${
+                                selected ? "ring-white" : "ring-leaf/30"
+                              }`}
+                            >
+                              {selected && <span className="h-2 w-2 rounded-full bg-white" />}
+                            </span>
+                            <span className="text-sm font-semibold">{option.name}</span>
+                          </span>
+                          <span className="text-sm font-semibold tabular-nums">
+                            {formatPrice(option.price)}
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </fieldset>
+              )}
+
+              {delivery === "domicilio" && (
                 <div className="mt-8">
                   <label htmlFor="order-address" className="font-display text-base text-leaf">
                     ¿A qué dirección te lo llevamos?
                   </label>
                   <p id="order-address-hint" className="mb-3 text-xs text-muted">
-                    Incluye barrio y apartamento o casa. El valor del domicilio te lo confirmamos por
-                    WhatsApp.
+                    Incluye barrio y apartamento o casa.
                   </p>
                   <textarea
                     id="order-address"
@@ -432,14 +475,26 @@ export function CartDrawer() {
             </div>
 
             <footer className="border-t border-leaf/10 bg-cream px-6 pb-6 pt-4">
+              {delivery === "domicilio" && (
+                <dl className="mb-2 space-y-1 text-sm text-muted">
+                  <div className="flex justify-between">
+                    <dt>Productos</dt>
+                    <dd className="tabular-nums">{formatPrice(subtotal)}</dd>
+                  </div>
+                  <div className="flex justify-between">
+                    <dt>Domicilio{zone ? ` · ${zone.name}` : ""}</dt>
+                    <dd className="tabular-nums">{zone ? formatPrice(zone.price) : "Elige la zona"}</dd>
+                  </div>
+                </dl>
+              )}
               <div className="flex items-baseline justify-between">
-                <span className="text-sm text-muted">
-                  {delivery === "domicilio" ? "Total sin domicilio" : "Total"}
-                </span>
+                <span className="text-sm text-muted">Total</span>
                 <span className="font-display text-2xl text-leaf tabular-nums">{formatPrice(total)}</span>
               </div>
               <p className="mt-1 min-h-4 text-xs text-muted" aria-live="polite">
-                {!dateIsValid
+                {!zoneIsValid
+                  ? "Elige la zona para calcular el domicilio."
+                  : !dateIsValid
                   ? "Elige el día para enviar tu pedido."
                   : !addressIsValid
                     ? "Escribe la dirección para el domicilio."
@@ -453,7 +508,7 @@ export function CartDrawer() {
               {canSend ? (
                 <a
                   href={whatsappLink(
-                    orderMessage({ lines, sedeName: sede.name, date, delivery, address, customer }),
+                    orderMessage({ lines, sedeName: sede.name, date, delivery, address, zone, customer }),
                     sede.whatsapp,
                   )}
                   target="_blank"

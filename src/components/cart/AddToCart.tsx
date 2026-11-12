@@ -12,7 +12,8 @@ function columns(count: number, compact: boolean) {
   if (count === 2) return "grid-cols-2";
   if (compact) return count === 3 ? "grid-cols-3" : "grid-cols-4";
   if (count === 3) {
-    return "grid-cols-2 sm:grid-cols-3 max-sm:[&>*:last-child]:col-span-2";
+    // En portátiles (lg) las tarjetas van de a 4 y son angostas: también 2 + 1.
+    return "grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 max-sm:[&>*:last-child]:col-span-2 lg:max-xl:[&>*:last-child]:col-span-2";
   }
   return "grid-cols-2";
 }
@@ -22,9 +23,11 @@ type AddToCartProps = {
   tone?: "light" | "dark";
   /** Versión más pequeña, para las filas del menú. */
   compact?: boolean;
+  /** Hay espacio de sobra (por ejemplo, en el hero): todos los tamaños en una fila. */
+  wide?: boolean;
 };
 
-export function AddToCart({ product, tone = "light", compact = false }: AddToCartProps) {
+export function AddToCart({ product, tone = "light", compact = false, wide = false }: AddToCartProps) {
   const [sizeIndex, setSizeIndex] = useState(0);
   const [added, setAdded] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -56,7 +59,7 @@ export function AddToCart({ product, tone = "light", compact = false }: AddToCar
         <div
           role="radiogroup"
           aria-label={`Presentación de ${product.name}`}
-          className={`grid w-full gap-0.5 rounded-2xl p-1 ${columns(product.sizes.length, compact || dark)} ${track}`}
+          className={`grid w-full gap-0.5 rounded-2xl p-1 ${columns(product.sizes.length, compact || wide)} ${track}`}
         >
           {product.sizes.map((item, index) => {
             const selected = index === sizeIndex;
@@ -78,16 +81,20 @@ export function AddToCart({ product, tone = "light", compact = false }: AddToCar
         </div>
       )}
 
-      <div className={`flex flex-wrap items-center justify-between gap-x-3 gap-y-2 ${compact ? "mt-2" : "mt-3"}`}>
-        <p className={dark ? "text-white" : "text-leaf"}>
-          <span className={`font-semibold tabular-nums ${compact ? "text-sm" : "text-base"}`}>
+      {/*
+        Precio y detalle en dos líneas fijas, con el botón al lado: así nada se
+        mueve al cambiar de tamaño, tenga o no detalle de porciones.
+      */}
+      <div
+        className={`flex items-center justify-between gap-x-3 gap-y-2 max-sm:flex-wrap ${compact ? "mt-2" : "mt-3"}`}
+      >
+        <p className={`min-w-0 ${dark ? "text-white" : "text-leaf"}`}>
+          <span className={`block font-semibold leading-tight tabular-nums ${compact ? "text-sm" : "text-base"}`}>
             {formatPrice(size.price)}
           </span>
-          {(size.detail || product.sizes.length === 1) && (
-            <span className={`ml-2 text-xs ${dark ? "text-white/60" : "text-muted"}`}>
-              {size.detail ?? size.label}
-            </span>
-          )}
+          <span className={`block min-h-4 text-xs leading-4 ${dark ? "text-white/60" : "text-muted"}`}>
+            {size.detail ?? (product.sizes.length === 1 ? size.label : " ")}
+          </span>
         </p>
         <button
           type="button"
@@ -95,7 +102,7 @@ export function AddToCart({ product, tone = "light", compact = false }: AddToCar
           aria-label={`Agregar ${product.name}, ${size.label}, al pedido`}
           className={`flex shrink-0 items-center gap-1.5 rounded-full font-semibold transition-[background-color,transform] duration-200 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage ${
             compact ? "h-8 px-3 text-xs" : "h-9 px-4 text-xs"
-          } ${!compact && !dark ? "max-sm:w-full max-sm:justify-center" : ""} ${
+          } ${!compact && !wide ? "max-sm:w-full max-sm:justify-center" : ""} ${
             dark
               ? "bg-lavender text-leaf-deep hover:bg-white"
               : added

@@ -27,8 +27,9 @@ export function Products({ id, title, intro, products, className }: ProductsProp
                   src={product.image}
                   alt={product.name}
                   fill
-                  sizes="(min-width: 1024px) 25vw, 50vw"
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none"
+                  // Las fotos panorámicas se recortan por alto: necesitan más resolución.
+                  sizes={product.imagePosition ? "(min-width: 1024px) 60vw, 130vw" : "(min-width: 1024px) 25vw, 50vw"}
+                  className={`object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none ${product.imagePosition ?? ""}`}
                 />
               </div>
               <h3 className="mt-4 mb-3 flex-1 font-display text-[15px] leading-snug text-leaf sm:text-base">

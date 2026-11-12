@@ -1,7 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
+import { Star } from "@/components/Ornaments";
 import { whatsappLink } from "@/data/site";
+
+const photo = "/empresas/eventos-empresariales.webp";
 
 // TODO: confirmar con la marca qué ofrecen exactamente a empresas.
 const services = [
@@ -54,22 +58,59 @@ export function Corporate() {
   ].join("\n");
 
   return (
-    <section id="empresas" aria-labelledby="empresas-title" className="scroll-mt-24 bg-lilac">
-      <div className="mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 md:py-28 lg:grid-cols-[1fr_26rem] lg:gap-16">
-        <div>
-          <h2 id="empresas-title" className="font-display text-3xl text-leaf sm:text-4xl">
+    <section
+      id="empresas"
+      aria-labelledby="empresas-title"
+      className="relative isolate scroll-mt-24 overflow-hidden bg-lavender"
+    >
+      {/* Fondo tipo vidrio esmerilado: la misma foto, muy desenfocada y con velo lavanda. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+        <Image
+          src={photo}
+          alt=""
+          fill
+          sizes="320px"
+          className="scale-110 object-cover blur-[64px] saturate-[1.15]"
+        />
+        <div className="absolute inset-0 bg-lavender/60" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_10%_0%,rgb(255_255_255/0.45),transparent_70%),radial-gradient(ellipse_60%_45%_at_90%_100%,rgb(255_255_255/0.35),transparent_70%)]" />
+      </div>
+
+      <div className="mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 md:py-28 lg:grid-cols-[1fr_26rem] lg:gap-14">
+        <div className="min-w-0">
+          <p className="inline-flex items-center gap-2 rounded-full bg-white/60 px-3 py-1 text-xs font-semibold text-leaf ring-1 ring-white/70 backdrop-blur-md">
+            <Star className="h-3 w-3" />
+            Eventos y regalos corporativos
+          </p>
+          <h2 id="empresas-title" className="mt-5 font-display text-4xl leading-none tracking-[-0.02em] text-leaf sm:text-5xl">
             Para empresas
           </h2>
-          <p className="mt-3 max-w-xl text-base text-muted">
+          <p className="mt-4 max-w-xl text-base leading-7 text-leaf/80">
             Endulzamos los momentos de tu equipo y tus clientes. Cuéntanos qué necesitas y te
             enviamos una cotización por WhatsApp.
           </p>
 
-          <ul className="mt-10 grid gap-x-8 gap-y-8 sm:grid-cols-2">
+          {/* Foto completa, sin recortes, con esquinas tipo iPhone */}
+          <figure className="relative mt-8 max-w-md overflow-hidden rounded-[2.25rem] shadow-[0_40px_80px_-40px_rgba(52,68,63,0.6)] ring-1 ring-white/60">
+            <div className="relative aspect-[1076/1461]">
+              <Image
+                src={photo}
+                alt="Equipo de una empresa decorando tortas en un taller de Celio Mi Cielo"
+                fill
+                sizes="(min-width: 640px) 448px, 100vw"
+                className="object-cover"
+              />
+            </div>
+          </figure>
+
+          <ul className="mt-8 grid gap-3 sm:grid-cols-2">
             {services.map((service) => (
-              <li key={service.title} className="border-t-2 border-lavender pt-5">
-                <h3 className="font-display text-lg text-leaf">{service.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted">{service.text}</p>
+              <li
+                key={service.title}
+                className="rounded-[1.75rem] bg-white/55 p-5 ring-1 ring-white/70 backdrop-blur-md"
+              >
+                <h3 className="font-display text-base text-leaf">{service.title}</h3>
+                <p className="mt-1.5 text-sm leading-6 text-leaf/75">{service.text}</p>
               </li>
             ))}
           </ul>
@@ -78,7 +119,7 @@ export function Corporate() {
         <form
           onSubmit={(event) => event.preventDefault()}
           aria-labelledby="cotizar-title"
-          className="rounded-[2rem] bg-cream p-6 shadow-[0_24px_60px_-30px_rgba(52,68,63,0.45)] sm:p-8"
+          className="self-start rounded-[2.25rem] bg-white/85 p-6 shadow-[0_40px_80px_-40px_rgba(52,68,63,0.6)] ring-1 ring-white/80 backdrop-blur-xl sm:p-8"
         >
           <h3 id="cotizar-title" className="font-display text-xl text-leaf">
             Pide tu cotización

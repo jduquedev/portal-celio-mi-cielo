@@ -21,7 +21,43 @@ export type Sede = {
   rappi: string;
   /** Si desde esta sede salen domicilios. Si no, solo se puede recoger ahí. */
   delivers: boolean;
+  /** Horario de atención en formato 24 h ("HH:MM"). */
+  opens: string;
+  closes: string;
+  /** Hora máxima recomendada para llegar a un Cake Party. */
+  cakePartyLastArrival: string;
 };
+
+/** "18:30" → minutos desde la medianoche. */
+function toMinutes(time: string) {
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
+}
+
+/** "18:30" → "6:30 p. m."; "12:00" → "12:00 m.". */
+export function formatTime(time: string) {
+  const total = toMinutes(time);
+  const hours = Math.floor(total / 60);
+  const minutes = String(total % 60).padStart(2, "0");
+  if (hours === 12 && minutes === "00") return "12:00 m.";
+  const suffix = hours < 12 ? "a. m." : "p. m.";
+  const hour12 = hours % 12 === 0 ? 12 : hours % 12;
+  return `${hour12}:${minutes} ${suffix}`;
+}
+
+/** "20:00" → "8 p. m." (sin minutos cuando son en punto). */
+export function formatHour(time: string) {
+  return formatTime(time).replace(":00", "");
+}
+
+/** Horas de llegada para un Cake Party, cada 30 minutos desde que abre. */
+export function cakePartyTimes(sede: Sede) {
+  const times: string[] = [];
+  for (let m = toMinutes(sede.opens); m <= toMinutes(sede.cakePartyLastArrival); m += 30) {
+    times.push(`${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`);
+  }
+  return times;
+}
 
 export const sedes: Sede[] = [
   {
@@ -33,6 +69,9 @@ export const sedes: Sede[] = [
     menu: `${uploads}/2024/10/MENU-CIUDAD-JARDIN-comprimido.pdf`,
     rappi: "", // TODO: pegar aquí el enlace de Rappi de Ciudad Jardín
     delivers: false,
+    opens: "11:00",
+    closes: "20:00",
+    cakePartyLastArrival: "18:30",
   },
   {
     name: "Aquarela",
@@ -43,7 +82,19 @@ export const sedes: Sede[] = [
     menu: `${uploads}/2024/10/MENU-AQUARELA.pdf`,
     rappi: "https://www.rappi.com.co/restaurantes/900409236-celio-mi-cielo-reposteria",
     delivers: true,
+    opens: "11:00",
+    closes: "19:00",
+    cakePartyLastArrival: "17:30",
   },
+];
+
+/** Tarifas de domicilio por zona de Cali, en pesos. */
+export type DeliveryZone = { id: string; name: string; price: number };
+
+export const deliveryZones: DeliveryZone[] = [
+  { id: "sur", name: "Cali Sur", price: 10500 },
+  { id: "pance-oeste-centro", name: "Pance, Oeste o Centro", price: 13500 },
+  { id: "norte", name: "Cali Norte", price: 17500 },
 ];
 
 const defaultWhatsapp = "573108565822";
@@ -64,6 +115,8 @@ export type CatalogProduct = {
   id: string;
   name: string;
   image: string;
+  /** Clase object-position para encuadrar fotos panorámicas en tarjetas y miniaturas. */
+  imagePosition?: string;
   category: Category;
   note?: string;
   sizes: Size[];
@@ -73,6 +126,8 @@ const porcion = (price: number): Size => ({ label: "Porción", price });
 const pequena = (price: number): Size => ({ label: "Pequeña", detail: "2-4 porciones", price });
 const mediana = (price: number): Size => ({ label: "Mediana", detail: "4-8 porciones", price });
 const entera = (price: number): Size => ({ label: "Entera", price });
+/** Tortas enteras: de 10 a 16 porciones. */
+const tortaEntera = (price: number): Size => ({ label: "Entera", detail: "10-16 porciones", price });
 const unit = (label: string, price: number): Size => ({ label, price });
 
 const products: CatalogProduct[] = [
@@ -80,10 +135,10 @@ const products: CatalogProduct[] = [
   {
     id: "torta-de-pastores",
     name: "Torta de Pastores",
-    image: `${uploads}/2023/12/Torta-de-Pastores.jpg`,
+    image: "/hero/torta-de-pastores.webp",
+    imagePosition: "object-[73%_50%]",
     category: "navidad",
     sizes: [
-      porcion(13500),
       { label: "Mediana", detail: "4-6 porciones", price: 48500 },
       { label: "Entera", detail: "8-10 porciones", price: 71500 },
     ],
@@ -93,35 +148,35 @@ const products: CatalogProduct[] = [
     name: "Birthday Cake",
     image: `${uploads}/2023/09/birthday.jpg`,
     category: "tortas",
-    sizes: [porcion(11500), entera(81000)],
+    sizes: [tortaEntera(81000)],
   },
   {
     id: "red-velvet",
     name: "Red Velvet",
     image: `${uploads}/2023/09/redvelvet.jpg`,
     category: "tortas",
-    sizes: [porcion(9000), pequena(28000), mediana(47000), entera(70000)],
+    sizes: [pequena(28000), mediana(47000), tortaEntera(70000)],
   },
   {
     id: "chocolate-con-arequipe",
     name: "Chocolate con arequipe",
     image: `${uploads}/2023/09/chocolate.jpg`,
     category: "tortas",
-    sizes: [porcion(9000), pequena(24000), mediana(46000), entera(70000)],
+    sizes: [pequena(24000), mediana(46000), tortaEntera(70000)],
   },
   {
     id: "platano-maduro",
     name: "Plátano maduro, bocadillo y queso cuajada",
     image: `${uploads}/2023/09/maduro-y-queso.jpg`,
     category: "tortas",
-    sizes: [porcion(9500), pequena(24000), mediana(48000), entera(75500)],
+    sizes: [pequena(24000), mediana(48000), tortaEntera(75500)],
   },
   {
     id: "tres-leches",
     name: "Tres leches",
     image: `${uploads}/2023/09/3-leches.jpg`,
     category: "tortas",
-    sizes: [porcion(11000), pequena(32000), mediana(46000), entera(85000)],
+    sizes: [pequena(32000), mediana(46000), tortaEntera(85000)],
   },
   {
     id: "zanahoria",
@@ -129,21 +184,21 @@ const products: CatalogProduct[] = [
     image: `${uploads}/2023/10/zanahoria.jpg`,
     category: "tortas",
     note: "Baja en azúcar",
-    sizes: [porcion(8500), pequena(24000), mediana(42000), entera(62000)],
+    sizes: [pequena(24000), mediana(42000), tortaEntera(62000)],
   },
   {
     id: "zanahoria-queso-crema",
     name: "Zanahoria con frosting de queso crema",
     image: `${uploads}/2023/09/zanahoria.jpg`,
     category: "tortas",
-    sizes: [porcion(9500), pequena(31000), mediana(50000), entera(75000)],
+    sizes: [pequena(31000), mediana(50000), tortaEntera(75000)],
   },
   {
     id: "torta-brownie-milo",
     name: "Torta de Brownie de Milo melcochudo",
     image: `${uploads}/2024/02/SAN-VALENTIN.jpg`,
     category: "tortas",
-    sizes: [pequena(26000), entera(52000)],
+    sizes: [pequena(26000), tortaEntera(52000)],
   },
   // Postres
   {
@@ -185,14 +240,16 @@ const products: CatalogProduct[] = [
   {
     id: "arroz-con-leche",
     name: "Arroz con leche",
-    image: `${uploads}/2023/11/BUC_7626.jpg`,
+    image: "/hero/mesa-navidena.webp",
+    imagePosition: "object-[58%_60%]",
     category: "postres",
     sizes: [unit("Individual", 6500), unit("1 libra", 15000), unit("4 libras", 55000)],
   },
   {
     id: "natilla",
     name: "Natilla Artesanal",
-    image: `${uploads}/2023/12/Natilla.jpg`,
+    image: "/hero/natilla.webp",
+    imagePosition: "object-[56%_50%]",
     category: "postres",
     sizes: [unit("Individual", 6500), unit("1 libra", 15500), unit("4 libras", 58000)],
   },
@@ -222,14 +279,16 @@ const products: CatalogProduct[] = [
   {
     id: "caja-galletas-navidenas",
     name: "Caja de Galletas Navideñas",
-    image: `${uploads}/2023/12/Caja-de-Navidad.jpg`,
+    image: "/hero/caja-galletas-navidenas.webp",
+    imagePosition: "object-[70%_50%]",
     category: "navidad",
     sizes: [unit("Caja", 35000)],
   },
   {
     id: "candle-cake",
     name: "Candle Cake",
-    image: `${uploads}/2023/12/Candle-cake.jpg`,
+    image: "/hero/candle-cake.webp",
+    imagePosition: "object-[71%_50%]",
     category: "navidad",
     sizes: [unit("Torta", 57000)],
   },
@@ -268,21 +327,10 @@ export const bestSellers = [
 
 export const christmasProducts = [
   "natilla",
-  "caja-navidena",
-  "caja-galletas-navidenas",
   "candle-cake",
+  "caja-galletas-navidenas",
+  "arroz-con-leche",
 ].map(getProduct);
-
-export const menu = (
-  [
-    ["Tortas", "tortas"],
-    ["Postres", "postres"],
-    ["Galletas", "galletas"],
-  ] as const
-).map(([title, category]) => ({
-  title,
-  items: products.filter((product) => product.category === category),
-}));
 
 export const priceFormatter = new Intl.NumberFormat("es-CO", {
   style: "currency",
@@ -302,6 +350,10 @@ export type HeroSlide = {
   src: string;
   alt: string;
   caption: string;
+  /** Foto panorámica con espacio libre a la izquierda: cubre todo el ancho del hero. */
+  fullBleed?: boolean;
+  /** Proporción ancho/alto de la foto panorámica (por ejemplo 1993 / 789). */
+  ratio?: number;
   /** Clases extra para encuadrar la foto dentro del círculo. */
   imageClassName?: string;
 };
@@ -327,31 +379,46 @@ export const christmasFeature: Feature = {
   product: getProduct("torta-de-pastores"),
   slides: [
     {
-      src: `${uploads}/2023/12/Torta-de-Pastores.jpg`,
-      alt: "Torta de Pastores con frutas confitadas",
+      src: "/hero/torta-de-pastores.webp",
+      alt: "Torta de Pastores horneada sobre una tabla de madera",
       caption: "Torta de Pastores",
-      // La torta está un poco a la izquierda en la foto original.
-      imageClassName: "object-[42%_50%]",
+      // Panorámica con fondo verde a la izquierda: en escritorio cubre todo el hero
+      // y la torta queda a la derecha; en celular se centra en la torta.
+      fullBleed: true,
+      ratio: 1993 / 789,
+      imageClassName: "object-[78%_50%] md:object-center",
     },
     {
-      src: `${uploads}/2023/12/Natilla.jpg`,
-      alt: "Natilla artesanal con buñuelos",
+      src: "/hero/natilla.webp",
+      alt: "Natilla artesanal con uvas pasas, junto a otros postres navideños",
       caption: "Natilla Artesanal",
+      fullBleed: true,
+      ratio: 1995 / 788,
+      imageClassName: "object-[55%_50%] md:object-center",
     },
     {
-      src: `${uploads}/2023/12/Candle-cake.jpg`,
-      alt: "Candle Cake navideña",
+      src: "/hero/candle-cake.webp",
+      alt: "Candle Cake con una vela encendida y decoración navideña",
       caption: "Candle Cake",
+      fullBleed: true,
+      ratio: 1994 / 789,
+      imageClassName: "object-[70%_50%] md:object-center",
     },
     {
-      src: `${uploads}/2023/12/Caja-de-Navidad.jpg`,
-      alt: "Caja de galletas navideñas",
+      src: "/hero/caja-galletas-navidenas.webp",
+      alt: "Caja rosada con galletas y brownies navideños",
       caption: "Caja de Galletas Navideñas",
+      fullBleed: true,
+      ratio: 1997 / 788,
+      imageClassName: "object-[70%_50%] md:object-center",
     },
     {
-      src: `${uploads}/2023/12/Plato-navideno.jpg`,
-      alt: "Caja navideña con postres",
-      caption: "Caja Navideña",
+      src: "/hero/mesa-navidena.webp",
+      alt: "Arroz con leche con uvas pasas, hojuelas y postre de chocolate",
+      caption: "Arroz con leche",
+      fullBleed: true,
+      ratio: 1994 / 789,
+      imageClassName: "object-[58%_50%] md:object-center",
     },
   ],
 };
@@ -377,8 +444,10 @@ export const defaultFeature: Feature = {
 
 export const experiences = [
   {
-    title: "Decora tu mini torta",
+    title: "Cake Party",
     text: "Somos el primer decora tu mini torta en Cali. Te sientas, eliges y la vuelves tuya.",
+    href: "/cake-party",
+    cta: "Reservar",
     message: "Hola Celio mi Cielo! Quisiera información sobre Decora tu mini torta.",
   },
   {
@@ -411,3 +480,15 @@ export const values = [
     text: "Materia prima de la mejor calidad, trabajada de manera artesanal y con mucho amor.",
   },
 ];
+
+// ---------------------------------------------------------------------------
+// Cake Party: actividad para decorar tu propia mini torta
+// ---------------------------------------------------------------------------
+
+export const cakeParty = {
+  /** Precio por Cake Party: incluye un mini cake, que se puede decorar en pareja. */
+  price: 78000,
+  includes: ["Mini cake", "Crema", "Relleno", "Mangas", "Utensilios", "Colorantes"],
+  /** Máximo de Cake Party que se pueden reservar desde la página. */
+  maxParties: 12,
+};

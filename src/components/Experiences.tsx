@@ -24,12 +24,11 @@ export function Experiences() {
               <h3 className="mt-6 font-display text-xl">{experience.title}</h3>
               <p className="mt-3 flex-1 text-sm leading-6 text-white/75">{experience.text}</p>
               <a
-                href={whatsappLink(experience.message)}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={"href" in experience ? experience.href : whatsappLink(experience.message)}
+                {...("href" in experience ? {} : { target: "_blank", rel: "noopener noreferrer" })}
                 className="mx-auto mt-6 rounded-full bg-white/10 px-5 py-2 text-xs font-semibold text-lavender transition-colors hover:bg-lavender hover:text-leaf-deep"
               >
-                Quiero saber más
+                {"cta" in experience ? experience.cta : "Quiero saber más"}
               </a>
             </li>
           ))}
