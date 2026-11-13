@@ -155,21 +155,21 @@ const products: CatalogProduct[] = [
     name: "Red Velvet",
     image: `${uploads}/2023/09/redvelvet.jpg`,
     category: "tortas",
-    sizes: [pequena(28000), mediana(47000), tortaEntera(70000)],
+    sizes: [pequena(31000), mediana(51000), tortaEntera(80000)],
   },
   {
     id: "chocolate-con-arequipe",
     name: "Chocolate con arequipe",
     image: `${uploads}/2023/09/chocolate.jpg`,
     category: "tortas",
-    sizes: [pequena(24000), mediana(46000), tortaEntera(70000)],
+    sizes: [pequena(26500), mediana(49000), tortaEntera(85000)],
   },
   {
     id: "platano-maduro",
     name: "Plátano maduro, bocadillo y queso cuajada",
     image: `${uploads}/2023/09/maduro-y-queso.jpg`,
     category: "tortas",
-    sizes: [pequena(24000), mediana(48000), tortaEntera(75500)],
+    sizes: [pequena(28000), mediana(58000), tortaEntera(88000)],
   },
   {
     id: "tres-leches",
@@ -191,7 +191,7 @@ const products: CatalogProduct[] = [
     name: "Zanahoria con frosting de queso crema",
     image: `${uploads}/2023/09/zanahoria.jpg`,
     category: "tortas",
-    sizes: [pequena(31000), mediana(50000), tortaEntera(75000)],
+    sizes: [pequena(36000), mediana(58000), tortaEntera(93000)],
   },
   {
     id: "torta-brownie-milo",
