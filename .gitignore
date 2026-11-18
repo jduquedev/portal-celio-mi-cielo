@@ -43,3 +43,6 @@ next-env.d.ts
 # local preview config
 .claude/launch.json
 .claude/settings.local.json
+
+# Fotos originales del negocio (pesadas): no se suben. La web usa las versiones .webp de public/.
+/_originales/

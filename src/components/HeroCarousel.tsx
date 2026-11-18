@@ -64,7 +64,7 @@ export function HeroCarousel({ slides, className }: HeroCarouselProps) {
       role="group"
       aria-roledescription="carrusel"
       aria-label="Fotos de temporada"
-      className={`overflow-hidden bg-leaf ${className ?? ""}`}
+      className={`overflow-hidden ${className ?? ""}`}
     >
       {slides.map((slide, i) => {
         const active = i === index;
@@ -112,8 +112,9 @@ export function HeroCarousel({ slides, className }: HeroCarouselProps) {
                     fill
                     sizes={slide.fullBleed ? "(min-width: 768px) 80vw, 100vw" : "(min-width: 768px) 70vw, 100vw"}
                     preload={i === 0}
-                    // Todas cargan desde el inicio para que ningún cambio muestre un hueco.
-                    loading={i === 0 ? undefined : "eager"}
+                    // Todas cargan desde el inicio para que ningún cambio muestre un hueco
+                    // (y la primera es la imagen principal de la página).
+                    loading="eager"
                     className={`object-cover ${slide.imageClassName ?? ""}`}
                   />
                 </div>

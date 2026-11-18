@@ -18,12 +18,16 @@ export function Hero({ feature, festive = false }: HeroProps) {
   return (
     <section
       id="inicio"
-      className="relative overflow-hidden bg-leaf text-white"
+      // En Navidad el hero toma el rojo del terciopelo de las fotos del catálogo,
+      // para que se fundan con el fondo sin franjas cafés.
+      className={`relative overflow-hidden text-white ${festive ? "hero-festive bg-velvet" : "bg-leaf"}`}
       style={{ "--hero-h": heroHeight } as CSSProperties}
     >
       <HeroCarousel
         slides={feature.slides}
-        className="relative aspect-[5/4] w-full md:absolute md:inset-0 md:aspect-auto md:w-auto"
+        className={`relative aspect-[5/4] w-full md:absolute md:inset-0 md:aspect-auto md:w-auto ${
+          festive ? "bg-velvet" : "bg-leaf"
+        }`}
       />
 
       {/*
@@ -42,7 +46,11 @@ export function Hero({ feature, festive = false }: HeroProps) {
           </h1>
           <p className="mt-6 text-base leading-7 text-white/80">{feature.description}</p>
 
-          <div className="mt-8 max-w-sm rounded-3xl bg-leaf-deep/40 p-5 ring-1 ring-white/10 backdrop-blur-md">
+          <div
+            className={`mt-8 max-w-sm rounded-3xl p-5 ring-1 ring-white/10 backdrop-blur-md ${
+              festive ? "bg-black/20" : "bg-leaf-deep/40"
+            }`}
+          >
             <p className="mb-3 text-sm font-semibold text-white">¿Qué tamaño quieres?</p>
             <AddToCart product={feature.product} tone="dark" wide />
           </div>

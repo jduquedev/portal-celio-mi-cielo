@@ -133,17 +133,6 @@ const unit = (label: string, price: number): Size => ({ label, price });
 const products: CatalogProduct[] = [
   // Tortas
   {
-    id: "torta-de-pastores",
-    name: "Torta de Pastores",
-    image: "/hero/torta-de-pastores.webp",
-    imagePosition: "object-[73%_50%]",
-    category: "navidad",
-    sizes: [
-      { label: "Mediana", detail: "4-6 porciones", price: 48500 },
-      { label: "Entera", detail: "8-10 porciones", price: 71500 },
-    ],
-  },
-  {
     id: "birthday-cake",
     name: "Birthday Cake",
     image: `${uploads}/2023/09/birthday.jpg`,
@@ -237,22 +226,6 @@ const products: CatalogProduct[] = [
     category: "postres",
     sizes: [unit("Individual", 8200), unit("Caja x 4", 32500), unit("Caja x 6", 63000)],
   },
-  {
-    id: "arroz-con-leche",
-    name: "Arroz con leche",
-    image: "/hero/mesa-navidena.webp",
-    imagePosition: "object-[58%_60%]",
-    category: "postres",
-    sizes: [unit("Individual", 6500), unit("1 libra", 15000), unit("4 libras", 55000)],
-  },
-  {
-    id: "natilla",
-    name: "Natilla Artesanal",
-    image: "/hero/natilla.webp",
-    imagePosition: "object-[56%_50%]",
-    category: "postres",
-    sizes: [unit("Individual", 6500), unit("1 libra", 15500), unit("4 libras", 58000)],
-  },
   // Galletas
   {
     id: "alfajores",
@@ -268,36 +241,89 @@ const products: CatalogProduct[] = [
     category: "galletas",
     sizes: [unit("Individual", 9500), unit("Caja x 4", 38000)],
   },
-  // Navidad
+  // Navidad (catálogo de temporada). Las coronas, la Torta de Pastores y el Pan de
+  // jamón agrupan su versión pequeña y la grande en un solo producto.
   {
-    id: "caja-navidena",
-    name: "Caja Navideña",
-    image: `${uploads}/2023/12/Plato-navideno.jpg`,
+    id: "corona-chocolate",
+    name: "Corona Navideña de Chocolate",
+    image: "/navidad/corona-chocolate.webp",
     category: "navidad",
-    sizes: [unit("Caja", 29000)],
+    note: "Torta de chocolate decorada con ganache de chocolate semiamargo",
+    sizes: [
+      { label: "Mini", detail: "Porción", price: 11500 },
+      { label: "Grande", detail: "6-8 porciones", price: 65000 },
+    ],
   },
   {
-    id: "caja-galletas-navidenas",
-    name: "Caja de Galletas Navideñas",
-    image: "/hero/caja-galletas-navidenas.webp",
-    imagePosition: "object-[70%_50%]",
+    id: "corona-red-velvet",
+    name: "Corona Navideña Red Velvet",
+    image: "/navidad/corona-red-velvet.webp",
     category: "navidad",
-    sizes: [unit("Caja", 35000)],
+    note: "Torta red velvet coronada con frosting de queso crema",
+    sizes: [
+      { label: "Mini", detail: "Porción", price: 11500 },
+      { label: "Grande", detail: "6-8 porciones", price: 65000 },
+    ],
   },
   {
-    id: "candle-cake",
-    name: "Candle Cake",
-    image: "/hero/candle-cake.webp",
-    imagePosition: "object-[71%_50%]",
+    id: "torta-de-pastores",
+    name: "Torta de Pastores",
+    image: "/navidad/torta-de-pastores.webp",
     category: "navidad",
-    sizes: [unit("Torta", 57000)],
+    sizes: [
+      { label: "Personal", price: 14200 },
+      { label: "Corona", detail: "6-8 porciones", price: 57800 },
+    ],
   },
   {
-    id: "galletas-polvorosas",
-    name: "Galletas polvorosas navideñas",
-    image: `${uploads}/2023/12/Galletas-polvorosas.jpg`,
+    id: "tiramisu-consciente",
+    name: "Tiramisú Consciente",
+    image: "/navidad/tiramisu-consciente.webp",
     category: "navidad",
-    sizes: [unit("Paquete", 7500)],
+    note: "Endulzado con alulosa y hecho con harina de almendras y arroz",
+    sizes: [tortaEntera(108500)],
+  },
+  {
+    id: "pan-de-jamon",
+    name: "Pan de jamón",
+    image: "/navidad/pan-de-jamon.webp",
+    category: "navidad",
+    sizes: [unit("Rollo", 7200), unit("Entero", 47500)],
+  },
+  {
+    id: "casita-de-jengibre",
+    name: "Casita de jengibre para decorar",
+    image: "/navidad/casita-de-jengibre.webp",
+    category: "navidad",
+    sizes: [unit("Kit", 75000)],
+  },
+  {
+    id: "caja-navidad-mini",
+    name: "Caja Navidad Mini",
+    image: "/navidad/caja-navidad-mini.webp",
+    category: "navidad",
+    sizes: [{ label: "Caja", detail: "4 galletas y brownie", price: 15000 }],
+  },
+  {
+    id: "caja-navidad-mediana",
+    name: "Caja Navidad Mediana",
+    image: "/navidad/caja-navidad-mediana.webp",
+    category: "navidad",
+    sizes: [{ label: "Caja", detail: "Galletas surtidas y brownies", price: 27600 }],
+  },
+  {
+    id: "caja-celio-especial",
+    name: "Caja Celio Especial",
+    image: "/navidad/caja-celio-especial.webp",
+    category: "navidad",
+    sizes: [{ label: "Caja", detail: "Brownies, alfajores y galletas", price: 33000 }],
+  },
+  {
+    id: "caja-navidad-grande",
+    name: "Caja Navidad Grande",
+    image: "/navidad/caja-navidad-grande.webp",
+    category: "navidad",
+    sizes: [{ label: "Caja", detail: "Nuestra selección completa", price: 47900 }],
   },
 ];
 
@@ -326,10 +352,16 @@ export const bestSellers = [
 ].map(getProduct);
 
 export const christmasProducts = [
-  "natilla",
-  "candle-cake",
-  "caja-galletas-navidenas",
-  "arroz-con-leche",
+  "corona-chocolate",
+  "corona-red-velvet",
+  "torta-de-pastores",
+  "tiramisu-consciente",
+  "pan-de-jamon",
+  "casita-de-jengibre",
+  "caja-navidad-mini",
+  "caja-navidad-mediana",
+  "caja-celio-especial",
+  "caja-navidad-grande",
 ].map(getProduct);
 
 export const priceFormatter = new Intl.NumberFormat("es-CO", {
@@ -377,48 +409,33 @@ export const christmasFeature: Feature = {
   description:
     "La consentida de nuestra mesa de diciembre. Horneada a mano, sin conservantes y lista para compartir en familia.",
   product: getProduct("torta-de-pastores"),
+  // Fotos del catálogo de Navidad (4:3). En escritorio ocupan el lado derecho del
+  // hero y se difuminan hacia el verde por la izquierda.
   slides: [
     {
-      src: "/hero/torta-de-pastores.webp",
-      alt: "Torta de Pastores horneada sobre una tabla de madera",
+      src: "/navidad/torta-de-pastores.webp",
+      alt: "Torta de Pastores en forma de corona, con brevas y frutas confitadas",
       caption: "Torta de Pastores",
-      // Panorámica con fondo verde a la izquierda: en escritorio cubre todo el hero
-      // y la torta queda a la derecha; en celular se centra en la torta.
-      fullBleed: true,
-      ratio: 1993 / 789,
-      imageClassName: "object-[78%_50%] md:object-center",
     },
     {
-      src: "/hero/natilla.webp",
-      alt: "Natilla artesanal con uvas pasas, junto a otros postres navideños",
-      caption: "Natilla Artesanal",
-      fullBleed: true,
-      ratio: 1995 / 788,
-      imageClassName: "object-[55%_50%] md:object-center",
+      src: "/navidad/coronas-y-cajas.webp",
+      alt: "Coronas navideñas de chocolate y red velvet junto a cajas de galletas",
+      caption: "Coronas y cajas navideñas",
     },
     {
-      src: "/hero/candle-cake.webp",
-      alt: "Candle Cake con una vela encendida y decoración navideña",
-      caption: "Candle Cake",
-      fullBleed: true,
-      ratio: 1994 / 789,
-      imageClassName: "object-[70%_50%] md:object-center",
+      src: "/navidad/corona-red-velvet.webp",
+      alt: "Corona navideña red velvet con frosting de queso crema y moño rojo",
+      caption: "Corona Red Velvet",
     },
     {
-      src: "/hero/caja-galletas-navidenas.webp",
-      alt: "Caja rosada con galletas y brownies navideños",
-      caption: "Caja de Galletas Navideñas",
-      fullBleed: true,
-      ratio: 1997 / 788,
-      imageClassName: "object-[70%_50%] md:object-center",
+      src: "/navidad/corona-chocolate.webp",
+      alt: "Corona navideña de chocolate con ganache y moño rojo",
+      caption: "Corona de Chocolate",
     },
     {
-      src: "/hero/mesa-navidena.webp",
-      alt: "Arroz con leche con uvas pasas, hojuelas y postre de chocolate",
-      caption: "Arroz con leche",
-      fullBleed: true,
-      ratio: 1994 / 789,
-      imageClassName: "object-[58%_50%] md:object-center",
+      src: "/navidad/caja-navidad-grande.webp",
+      alt: "Caja dorada con galletas, alfajores, polvorosas y brownie",
+      caption: "Caja Navidad Grande",
     },
   ],
 };

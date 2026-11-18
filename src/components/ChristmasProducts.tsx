@@ -60,9 +60,13 @@ export function ChristmasProducts({ products }: ChristmasProductsProps) {
           </p>
         </div>
 
-        <ul className="mt-14 grid grid-cols-2 gap-x-4 gap-y-12 sm:gap-x-6 lg:grid-cols-4">
+        {/* Flex en vez de grid para que la última fila, si queda incompleta, se centre. */}
+        <ul className="mt-14 flex flex-wrap justify-center gap-x-4 gap-y-12 sm:gap-x-6">
           {products.map((product) => (
-            <li key={product.id} className="flex flex-col">
+            <li
+              key={product.id}
+              className="flex w-[calc(50%-0.5rem)] flex-col sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]"
+            >
               <div className="relative rounded-t-full rounded-b-[1.75rem] p-1.5 ring-1 ring-lavender/35">
                 <div className="group relative aspect-[4/5] overflow-hidden rounded-t-full rounded-b-3xl bg-leaf">
                   <Image
