@@ -1,7 +1,7 @@
-/** Íconos de línea para lo que incluye el Cake Party (mismo orden que cakeParty.includes). */
+/** Íconos de línea para lo que incluye Decora mi torta (mismo orden que cakeParty.includes). */
 export function IncludeIcon({ index }: { index: number }) {
   const paths = [
-    // Mini cake
+    // Mini torta
     <path key="a" d="M5 11h14v8H5zM5 14c2 1.5 4 1.5 7 0s5-1.5 7 0M12 4v4M10.5 6.5c0-1 1.5-2.5 1.5-2.5s1.5 1.5 1.5 2.5a1.5 1.5 0 0 1-3 0z" />,
     // Crema
     <path key="b" d="M7 20h10l-1-7H8zM8 13c0-3 2-5 4-8 2 3 4 5 4 8" />,

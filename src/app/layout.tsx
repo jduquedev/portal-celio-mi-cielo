@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Montserrat, Poppins } from "next/font/google";
+import { Figtree, Jost } from "next/font/google";
 import { AddedToast } from "@/components/cart/AddedToast";
 import { FloatingCartButton } from "@/components/cart/CartButton";
 import { CartDrawer } from "@/components/cart/CartDrawer";
@@ -9,16 +9,22 @@ import { ScrollToHash } from "@/components/ScrollToHash";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import "./globals.css";
 
-const poppins = Poppins({
-  variable: "--font-poppins",
+/*
+ * Tipografías del manual de marca: Neulis (títulos) e Intro (textos). Mientras
+ * llegan sus archivos con licencia web, se usan las alternativas gratuitas más
+ * parecidas: Jost en lugar de Neulis y Figtree en lugar de Intro. Para cambiarlas
+ * por las originales, basta con cargar los archivos con next/font/local aquí.
+ */
+const titles = Jost({
+  variable: "--font-titles",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "800"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
+const body = Figtree({
+  variable: "--font-body",
   subsets: ["latin"],
-  weight: ["600", "800"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -31,7 +37,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es"
-      className={`${poppins.variable} ${montserrat.variable} h-full antialiased`}
+      data-scroll-behavior="smooth"
+      className={`${titles.variable} ${body.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <Header />

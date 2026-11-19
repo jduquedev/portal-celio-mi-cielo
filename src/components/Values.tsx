@@ -1,3 +1,4 @@
+import { Flower } from "@/components/Ornaments";
 import { values } from "@/data/site";
 
 export function Values() {
@@ -5,6 +6,11 @@ export function Values() {
     <section id="nosotros" className="bg-lilac">
       <div className="mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 md:grid-cols-[1fr_2fr] md:py-28">
         <div>
+          {/* Frase de marca del manual, con la flor del logo. */}
+          <p className="mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-sage-ink">
+            <Flower className="h-5 w-5" />
+            Comida para el alma
+          </p>
           <h2 className="font-display text-3xl leading-tight text-leaf sm:text-4xl">
             El cielo en cada porción
           </h2>

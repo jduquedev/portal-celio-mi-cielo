@@ -25,6 +25,11 @@ export function Footer() {
               TikTok
             </a>
           </li>
+          <li>
+            <a href={social.facebook} {...external} className={linkClass}>
+              Facebook
+            </a>
+          </li>
         </ul>
       </div>
       <p className="border-t border-cream/10 px-4 py-5 text-center text-xs text-cream/50">

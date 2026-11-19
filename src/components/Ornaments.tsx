@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { type CSSProperties, useId } from "react";
 
 type OrnamentProps = { className?: string };
 
@@ -68,6 +68,47 @@ export function Star({ className, style }: OrnamentProps & { style?: CSSProperti
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className} style={style}>
       <path d="M12 0c.8 7.4 4.6 11.2 12 12-7.4.8-11.2 4.6-12 12-.8-7.4-4.6-11.2-12-12 7.4-.8 11.2-4.6 12-12z" />
+    </svg>
+  );
+}
+
+/**
+ * Líneas onda del manual de marca (pág. 18): trazos curvos con manchitas, en los
+ * colores de la marca o a una tinta (blanco) sobre fondos de color. Opcionalmente,
+ * una frase de marca corre sobre la línea verde.
+ */
+export function WaveLines({
+  className,
+  tone = "brand",
+  phrase,
+}: OrnamentProps & { tone?: "brand" | "white"; phrase?: string }) {
+  const color = (brand: string) => (tone === "white" ? "#ffffff" : brand);
+  const pathId = useId();
+  return (
+    <svg viewBox="0 0 600 400" fill="none" aria-hidden="true" className={className}>
+      <g strokeWidth="7" strokeLinecap="round">
+        <path id={pathId} d="M-10 300 C 90 230, 170 330, 260 260 S 420 140, 520 210 S 600 320, 640 280" stroke={color("#6daf98")} />
+        <path d="M40 -10 C 10 90, 120 140, 90 230 S 140 380, 230 410" stroke={color("#d1badb")} />
+        <path d="M-20 380 C 120 330, 260 400, 360 340 S 470 230, 450 170 S 380 110, 420 60 S 520 30, 610 70" stroke={color("#e8b72b")} />
+        <path d="M300 -20 C 280 60, 360 90, 340 150" stroke={color("#bfdad5")} />
+      </g>
+      <g fill={color("#e8b72b")}>
+        {[0, 1, 2, 3, 4].map((i) => (
+          <ellipse key={i} cx={470 + (i % 3) * 18} cy={300 + Math.floor(i / 3) * 18 + (i % 2) * 6} rx="3" ry="7" transform={`rotate(25 ${470 + (i % 3) * 18} ${300 + Math.floor(i / 3) * 18})`} />
+        ))}
+      </g>
+      <g fill={color("#6daf98")}>
+        {[0, 1, 2, 3].map((i) => (
+          <ellipse key={i} cx={160 + (i % 2) * 18} cy={90 + Math.floor(i / 2) * 18 + (i % 2) * 6} rx="3" ry="7" transform={`rotate(-30 ${160 + (i % 2) * 18} ${90 + Math.floor(i / 2) * 18})`} />
+        ))}
+      </g>
+      {phrase && (
+        <text fill={tone === "white" ? "#ffffff" : "#445854"} fontSize="22" fontWeight="700" letterSpacing="1">
+          <textPath href={`#${pathId}`} startOffset="22%" dy="-10">
+            {phrase}
+          </textPath>
+        </text>
+      )}
     </svg>
   );
 }

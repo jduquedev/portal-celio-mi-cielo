@@ -3,7 +3,7 @@ import { IncludeIcon } from "@/components/CakePartyIcon";
 import { Star } from "@/components/Ornaments";
 import { cakeParty, formatPrice } from "@/data/site";
 
-/** Invitación al Cake Party en el inicio; la reserva vive en /cake-party. */
+/** Invitación a Decora mi torta en el inicio; la reserva vive en /decora-mi-torta. */
 export function CakePartyTeaser() {
   return (
     <section
@@ -25,7 +25,7 @@ export function CakePartyTeaser() {
             id="cake-party-teaser-title"
             className="mt-5 font-display text-5xl leading-none tracking-[-0.02em] sm:text-7xl"
           >
-            Cake Party
+            Decora mi torta
           </h2>
           <p className="mt-5 max-w-lg text-lg leading-8 text-leaf/85">
             Ven con tu gente y decora tu propia mini torta. Nosotros ponemos todo; tú pones la
@@ -33,14 +33,14 @@ export function CakePartyTeaser() {
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Link
-              href="/cake-party"
+              href="/decora-mi-torta"
               className="rounded-full bg-leaf px-7 py-3.5 text-sm font-semibold text-white transition-[background-color,transform] hover:bg-leaf-deep active:scale-[0.98]"
             >
-              Reservar mi Cake Party
+              Reservar ahora
             </Link>
             <p className="text-sm">
               <span className="font-display text-2xl tabular-nums">{formatPrice(cakeParty.price)}</span>{" "}
-              <span className="text-leaf/70">por Cake Party</span>
+              <span className="text-leaf/70">por mini torta</span>
             </p>
           </div>
         </div>

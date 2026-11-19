@@ -37,31 +37,21 @@ const tones = {
     button: "bg-lavender text-leaf-deep hover:bg-white",
     buttonAdded: "bg-lavender text-leaf-deep hover:bg-white",
   },
-  // Navidad sobre el degradado vino del hero: todo en crema.
+  // Navidad sobre el rojo del hero: textos en blanco y botón blanco con texto verde.
   festive: {
-    track: "bg-crema/10",
-    selected: "bg-crema text-vino shadow-sm",
-    idle: "text-crema/70 hover:text-crema",
-    price: "text-crema",
-    detail: "text-crema/60",
-    button: "bg-crema text-vino hover:bg-white",
-    buttonAdded: "bg-white text-vino",
-  },
-  // Navidad sobre el crema del catálogo: botón en vino, textos en chocolate.
-  festiveLight: {
-    track: "bg-chocolate/[0.06]",
-    selected: "bg-white text-vino shadow-[0_1px_3px_rgba(48,37,34,0.18)]",
-    idle: "text-chocolate/60 hover:text-vino",
-    price: "text-chocolate",
-    detail: "text-chocolate/60",
-    button: "bg-vino text-crema hover:bg-chocolate",
-    buttonAdded: "bg-chocolate text-crema",
+    track: "bg-black/15",
+    selected: "bg-white text-leaf shadow-sm",
+    idle: "text-white/75 hover:text-white",
+    price: "text-white",
+    detail: "text-white/70",
+    button: "bg-white text-leaf hover:bg-lilac",
+    buttonAdded: "bg-lilac text-leaf",
   },
 };
 
 type AddToCartProps = {
   product: CatalogProduct;
-  /** light: fondo claro; dark: verde; festive: vino de Navidad; festiveLight: crema. */
+  /** light: fondo claro; dark: fondo verde; festive: rojo del hero de Navidad. */
   tone?: keyof typeof tones;
   /** Versión más pequeña, para las filas del menú. */
   compact?: boolean;

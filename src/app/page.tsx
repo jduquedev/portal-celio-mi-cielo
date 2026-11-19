@@ -8,7 +8,7 @@ import { Rappi } from "@/components/Rappi";
 import { Sedes } from "@/components/Sedes";
 import { Values } from "@/components/Values";
 import {
-  bestSellers,
+  favorites,
   christmasFeature,
   christmasProducts,
   christmasSeason,
@@ -24,9 +24,9 @@ export default function Home() {
       />
       <Products
         id="productos"
-        title="Los más buscados"
+        title="Los favoritos"
         intro="Elige el tamaño que necesitas y agrégalo a tu pedido."
-        products={bestSellers}
+        products={favorites}
       />
       <Rappi />
       {christmasSeason && <ChristmasProducts products={christmasProducts} />}

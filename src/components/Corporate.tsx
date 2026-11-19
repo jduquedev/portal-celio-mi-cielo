@@ -23,7 +23,7 @@ const services = [
   },
   {
     title: "Experiencias para equipos",
-    text: "Decora tu mini torta en equipo: una forma diferente de integrar y celebrar.",
+    text: "Decora mi torta en equipo: una forma diferente de integrar y celebrar.",
   },
 ];
 

@@ -1,36 +1,35 @@
-import { christmasSeason, sedes } from "@/data/site";
+import { WaveLines } from "@/components/Ornaments";
+import { sedes } from "@/data/site";
 
 /**
  * Pedidos inmediatos por Rappi para quien está cerca de una sede.
  * Solo aparece si al menos una sede tiene su enlace de Rappi en site.ts.
  *
- * En Navidad lleva el mismo degradado del hero (vino → ciruela → morado oscuro) con
- * textos en crema; el resto del año, lavanda clara a lila.
+ * Banner en el lila de la marca con las líneas onda a una tinta (blanco), como
+ * en el manual de marca, y textos en verde oscuro.
  */
 export function Rappi() {
   const withRappi = sedes.filter((sede) => sede.rappi);
   if (withRappi.length === 0) return null;
 
-  const theme = christmasSeason
-    ? {
-        box: "bg-linear-to-br from-vino via-ciruela to-morado-oscuro",
-        title: "text-crema",
-        body: "text-crema/80",
-        card: "bg-crema text-chocolate hover:bg-white",
-      }
-    : {
-        box: "bg-linear-to-br from-lavanda-clara to-lavender",
-        title: "text-leaf",
-        body: "text-leaf/80",
-        card: "bg-white text-leaf hover:bg-cream",
-      };
+  const theme = {
+    box: "relative overflow-hidden bg-lavender",
+    title: "text-leaf",
+    body: "text-leaf-deep",
+    card: "bg-white text-leaf hover:bg-lilac",
+  };
 
   return (
-    <section aria-labelledby="rappi-title" className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6 md:pb-28">
+    <section
+      id="rappi"
+      aria-labelledby="rappi-title"
+      className="mx-auto w-full max-w-6xl scroll-mt-28 px-4 pb-20 sm:px-6 md:pb-28"
+    >
       <div
         className={`flex flex-col gap-6 rounded-[2rem] px-6 py-8 sm:px-10 md:flex-row md:items-center md:justify-between ${theme.box}`}
       >
-        <div className="max-w-md">
+        <WaveLines tone="white" className="pointer-events-none absolute -right-10 -top-24 w-[28rem] opacity-50" />
+        <div className="relative max-w-md">
           <h2 id="rappi-title" className={`font-display text-2xl sm:text-3xl ${theme.title}`}>
             ¿Se te antojó para hoy?
           </h2>
@@ -39,7 +38,7 @@ export function Rappi() {
             los días de anticipación.
           </p>
         </div>
-        <ul className="flex flex-col gap-2 sm:flex-row">
+        <ul className="relative flex flex-col gap-2 sm:flex-row">
           {withRappi.map((sede) => (
             <li key={sede.name}>
               <a

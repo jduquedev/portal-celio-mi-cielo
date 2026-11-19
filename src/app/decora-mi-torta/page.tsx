@@ -3,15 +3,15 @@ import Image from "next/image";
 import { CakeParty } from "@/components/CakeParty";
 
 export const metadata: Metadata = {
-  title: "Cake Party | Celio Mi Cielo Repostería",
+  title: "Decora mi torta | Celio Mi Cielo Repostería",
   description:
-    "Decora tu propia mini torta en Celio Mi Cielo. Incluye mini cake, crema, relleno, mangas, utensilios y colorantes. Reserva por WhatsApp.",
+    "Decora tu propia mini torta en Celio Mi Cielo. Cada una incluye 1 mini torta, 1 crema, 1 relleno, 2 mangas, utensilios y colorantes. Reserva por WhatsApp.",
 };
 
 const steps = [
   {
     title: "Reserva aquí",
-    text: "Elige sede, día, hora y cuántos Cake Party quieres. Se abre WhatsApp con tu reserva lista.",
+    text: "Elige sede, día, hora y cuántas mini tortas quieres. Se abre WhatsApp con tu reserva lista.",
   },
   {
     title: "Paga el 50% y queda agendada",
@@ -19,7 +19,7 @@ const steps = [
   },
   {
     title: "Ven a decorar",
-    text: "Te esperamos con tu mini cake, la crema, el relleno, las mangas, los utensilios y los colorantes.",
+    text: "Te esperamos con tu mini torta, 1 crema, 1 relleno, 2 mangas, los utensilios y los colorantes.",
   },
   {
     title: "Llévatela",
@@ -27,11 +27,11 @@ const steps = [
   },
 ];
 
-export default function CakePartyPage() {
+export default function DecoraMiTortaPage() {
   return (
     <div className="relative isolate overflow-hidden bg-lavender">
       {/*
-        Fondo tipo vidrio esmerilado: la misma foto del Cake Party, muy desenfocada
+        Fondo tipo vidrio esmerilado: la misma foto de Decora mi torta, muy desenfocada
         y con un velo lavanda encima, para que los colores combinen con ella.
       */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">

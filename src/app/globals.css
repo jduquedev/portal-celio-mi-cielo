@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
-/* Paleta tomada de la página actual de Celio Mi Cielo. */
+/*
+ * Paleta del manual de marca (pág. 10): verde oscuro, verde, lila (principal),
+ * amarillo y aguamarina. Los demás son tonos de apoyo derivados de ellos.
+ */
 @theme inline {
   --color-cream: #ffffff;
   --color-lilac: #f6f0f8;
@@ -9,51 +12,46 @@
   --color-sage: #6daf98;
   --color-sage-ink: #4a8670;
   --color-lavender: #d1badb;
+  --color-amarillo: #e8b72b;
+  --color-aguamarina: #bfdad5;
   /*
-   * Paleta de temporada de Navidad, «pastelería elegante». El morado oficial de la
-   * marca se conserva y se combina con el vino mediante degradados:
-   * - vino → ciruela → morado oscuro: hero y banner de Rappi.
-   * - lavanda clara → lila: banner de Rappi fuera de temporada.
-   * - crema: fondo del catálogo, para que las fotos sean protagonistas.
-   * El dorado queda para detalles: etiquetas, indicadores y adornos.
+   * Temporada de Navidad: hero en el rojo de las fotos, crema
+   * como fondo claro del catálogo (con el logo en verde oscuro, como pide el
+   * manual) y dorado solo como acento, igual que el logo en foil de las cajas.
    */
-  --color-vino: #6f1d2a;
-  --color-ciruela: #4a1f3d;
-  --color-morado-oscuro: #3a2752;
-  --color-morado: #a78bc9;
-  --color-lavanda-clara: #ede4f5;
   --color-crema: #f6efe5;
   --color-dorado: #c5a46d;
-  --color-chocolate: #302522;
+  /* Rojo terciopelo: promedio del fondo de las fotos de Navidad, para el hero. */
+  --color-terciopelo: #aa0305;
   --color-ink: #444444;
   --color-muted: #666666;
-  --font-sans: var(--font-poppins);
-  --font-display: var(--font-montserrat);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-titles);
 }
 
 html {
   scroll-behavior: smooth;
 }
 
-/* Color del hero en RGB, para el difuminado de sus fotos. En Navidad pasa a vino. */
+/* Color del hero en RGB, para el difuminado de sus fotos. En Navidad, el rojo de las fotos. */
 :root {
   --hero-rgb: 68 88 84;
 }
 
 .hero-festive {
-  --hero-rgb: 111 29 42;
+  --hero-rgb: 170 3 5;
 }
 
 body {
   background: var(--color-cream);
   color: var(--color-ink);
-  font-family: var(--font-poppins), system-ui, sans-serif;
+  font-family: var(--font-body), system-ui, sans-serif;
 }
 
-/* Títulos en Montserrat ExtraBold. */
+/* Títulos en la tipografía de títulos (Neulis; hoy Jost) en su peso Semibold. */
 .font-display {
-  font-weight: 800;
-  letter-spacing: -0.01em;
+  font-weight: 600;
+  letter-spacing: -0.005em;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -84,7 +82,7 @@ body {
 
 /*
  * Difuminado de las fotos del hero hacia el color del hero (--hero-rgb): verde de
- * la marca por defecto, vino en temporada de Navidad.
+ * la marca por defecto; en Navidad, el mismo rojo de las fotos (no se nota el degradado).
  * Curva suave con varias paradas en vez de una línea recta: así no queda una
  * franja grisácea sobre la foto. Abajo en celular, a la izquierda en escritorio.
  */
@@ -123,6 +121,39 @@ body {
 }
 
 /*
+ * Navidad: la foto empieza más a la izquierda y se difumina en un tramo más largo
+ * y con una curva más suave, sin franja sólida al inicio, para que casi no se note.
+ */
+.hero-festive .hero-fade {
+  background-image: linear-gradient(
+    to top,
+    rgb(var(--hero-rgb) / 0.85) 0%,
+    rgb(var(--hero-rgb) / 0.62) 10%,
+    rgb(var(--hero-rgb) / 0.4) 20%,
+    rgb(var(--hero-rgb) / 0.22) 30%,
+    rgb(var(--hero-rgb) / 0.1) 40%,
+    rgb(var(--hero-rgb) / 0.03) 50%,
+    rgb(var(--hero-rgb) / 0) 58%
+  );
+}
+
+@media (min-width: 48rem) {
+  .hero-festive .hero-fade {
+    background-image:
+      linear-gradient(
+        to right,
+        rgb(var(--hero-rgb) / 0.7) 0%,
+        rgb(var(--hero-rgb) / 0.5) 10%,
+        rgb(var(--hero-rgb) / 0.32) 20%,
+        rgb(var(--hero-rgb) / 0.18) 30%,
+        rgb(var(--hero-rgb) / 0.08) 40%,
+        rgb(var(--hero-rgb) / 0.02) 50%,
+        rgb(var(--hero-rgb) / 0) 58%
+      );
+  }
+}
+
+/*
  * Fotos panorámicas del hero (fullBleed) en escritorio: ocupan todo el alto y solo
  * se desvanece el borde izquierdo, para que se funda con el verde del hero.
  */
@@ -132,3 +163,44 @@ body {
   }
 }
 
+
+/* Texto del hero al cambiar de foto: entra con un fundido y una subida corta. */
+@keyframes hero-text-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero-text-in {
+  animation: hero-text-in 500ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-text-in {
+    animation: none;
+  }
+}
+
+
+/*
+ * Fotos del hero de Navidad: además del velo de color, el borde de la foto se
+ * desvanece (abajo en celular, a la izquierda en escritorio) para que no quede una
+ * línea donde empieza la foto.
+ */
+.hero-photo-soft {
+  mask-image: linear-gradient(to top, transparent 0%, #000 28%);
+}
+
+@media (min-width: 48rem) {
+  .hero-photo-soft {
+    mask-image:
+      linear-gradient(to right, transparent 0%, #000 24%),
+      linear-gradient(to bottom, transparent 0%, #000 6%, #000 94%, transparent 100%);
+    mask-composite: intersect;
+  }
+}

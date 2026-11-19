@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 /**
  * Al llegar a una página con "#seccion" en la dirección (por ejemplo, desde el
- * menú en /cake-party hacia /#sedes), baja hasta esa sección cuando ya existe.
+ * menú en /decora-mi-torta hacia /#sedes), baja hasta esa sección cuando ya existe.
  * Next.js cambia de página sin recargar, así que la sección puede tardar un poco
  * en aparecer: se reintenta por un momento.
  */

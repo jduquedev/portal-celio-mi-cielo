@@ -23,17 +23,19 @@ function usePageVisible() {
 
 type HeroCarouselProps = {
   slides: Slide[];
-  /** Temporada de Navidad: controles en chocolate con indicador dorado. */
+  /** Temporada de Navidad: controles translúcidos sobre el rojo. */
   festive?: boolean;
   /** Posición y tamaño del bloque de fotos dentro del hero. */
   className?: string;
+  /** Avisa qué foto está en pantalla, para que el hero muestre su producto. */
+  onSlideChange?: (index: number) => void;
 };
 
 /**
  * Fotos de fondo del hero: rotan con un fundido lento y un zoom suave, y se
  * difuminan hacia el color del hero para que el texto se lea sin cajas.
  */
-export function HeroCarousel({ slides, festive = false, className }: HeroCarouselProps) {
+export function HeroCarousel({ slides, festive = false, className, onSlideChange }: HeroCarouselProps) {
   const [{ index, previous }, setSlide] = useState<{ index: number; previous: number | null }>({
     index: 0,
     previous: null,
@@ -45,21 +47,20 @@ export function HeroCarousel({ slides, festive = false, className }: HeroCarouse
   const autoplay = slides.length > 1 && !paused && pageVisible;
 
   function goTo(next: number) {
-    setSlide((current) =>
-      current.index === next ? current : { index: next, previous: current.index },
-    );
+    if (next === index) return;
+    setSlide({ index: next, previous: index });
+    onSlideChange?.(next);
   }
 
   useEffect(() => {
     if (!autoplay) return;
     const timer = setTimeout(() => {
-      setSlide((current) => ({
-        index: (current.index + 1) % slides.length,
-        previous: current.index,
-      }));
+      const next = (index + 1) % slides.length;
+      setSlide({ index: next, previous: index });
+      onSlideChange?.(next);
     }, SLIDE_MS);
     return () => clearTimeout(timer);
-  }, [autoplay, index, slides.length]);
+  }, [autoplay, index, slides.length, onSlideChange]);
 
   return (
     <div
@@ -75,6 +76,8 @@ export function HeroCarousel({ slides, festive = false, className }: HeroCarouse
           <div
             key={slide.src}
             aria-hidden={!active}
+            // Cada foto difumina hacia su propio rojo de fondo.
+            style={slide.background ? ({ "--hero-rgb": slide.background } as CSSProperties) : undefined}
             className={`absolute inset-0 transition-opacity duration-[1400ms] ease-[cubic-bezier(0.77,0,0.175,1)] motion-reduce:duration-300 ${
               active ? "opacity-100" : "opacity-0"
             }`}
@@ -84,7 +87,7 @@ export function HeroCarousel({ slides, festive = false, className }: HeroCarouse
               (fullBleed) cubren todo el ancho porque ya traen espacio libre para el texto.
             */}
             <div
-              className={`absolute inset-0 overflow-hidden ${slide.fullBleed ? "" : "md:left-[30%]"}`}
+              className={`absolute inset-0 overflow-hidden ${slide.fullBleed ? "" : festive ? "md:left-[8%]" : "md:left-[30%]"}`}
             >
               {/*
                 Panorámica en escritorio: ocupa todo el alto del hero con la proporción
@@ -105,8 +108,8 @@ export function HeroCarousel({ slides, festive = false, className }: HeroCarouse
               >
                 <div
                   className={`absolute inset-0 ${slide.fullBleed ? "hero-panorama" : ""} ${
-                    zooming ? "hero-zoom" : ""
-                  }`}
+                    festive && !slide.fullBleed ? "hero-photo-soft" : ""
+                  } ${zooming ? "hero-zoom" : ""}`}
                 >
                   <Image
                     src={slide.src}
@@ -122,7 +125,7 @@ export function HeroCarousel({ slides, festive = false, className }: HeroCarouse
                 </div>
               </div>
               {/* Difuminado hacia el color del hero: abajo en celular, a la izquierda en escritorio. */}
-              <div aria-hidden="true" className="hero-fade pointer-events-none absolute inset-0" />
+              <div aria-hidden="true" className="hero-fade pointer-events-none absolute -inset-px" />
             </div>
           </div>
         );
@@ -130,12 +133,13 @@ export function HeroCarousel({ slides, festive = false, className }: HeroCarouse
 
       {slides.length > 1 && (
         <div
-          className={`absolute right-4 top-4 flex items-center gap-3 rounded-full py-1.5 pl-4 pr-1.5 backdrop-blur-md md:bottom-8 md:right-28 md:top-auto ${
-            festive ? "bg-chocolate/55 text-crema" : "bg-leaf-deep/45 text-white"
+          className={`absolute right-4 top-4 flex items-center gap-3 rounded-full py-1.5 pl-3 pr-1.5 backdrop-blur-md md:bottom-8 md:right-28 md:top-auto ${
+            festive ? "bg-black/20 text-white" : "bg-leaf-deep/45 text-white"
           }`}
         >
-          <p className="text-xs font-semibold" aria-live={autoplay ? "off" : "polite"}>
-            {slides[index].caption}
+          {/* El nombre ya se ve grande en el hero; aquí solo se anuncia al lector de pantalla. */}
+          <p className="sr-only" aria-live={autoplay ? "off" : "polite"}>
+            {slides[index].title}
           </p>
           <div className="flex items-center gap-1">
             {slides.map((slide, i) => (
@@ -143,14 +147,14 @@ export function HeroCarousel({ slides, festive = false, className }: HeroCarouse
                 key={slide.src}
                 type="button"
                 onClick={() => goTo(i)}
-                aria-label={`Ver ${slide.caption}`}
+                aria-label={`Ver ${slide.title}`}
                 aria-current={i === index}
                 className="flex h-6 items-center justify-center px-0.5 focus-visible:outline-2 focus-visible:outline-lavender"
               >
                 <span
                   className={`block h-1.5 rounded-full transition-[width,background-color] duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] ${
                     i === index
-                      ? `w-5 ${festive ? "bg-dorado" : "bg-lavender"}`
+                      ? `w-5 ${festive ? "bg-white" : "bg-lavender"}`
                       : "w-1.5 bg-white/45"
                   }`}
                 />

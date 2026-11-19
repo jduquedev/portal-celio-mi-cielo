@@ -42,7 +42,7 @@ function tomorrow() {
 const fieldClass =
   "mt-1 w-full rounded-2xl bg-cream px-4 py-3 text-base text-leaf ring-1 ring-leaf/15 transition-shadow placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-sage sm:text-sm";
 
-/** Página de reserva del Cake Party: explicación, qué incluye y formulario. */
+/** Página de reserva de Decora mi torta: explicación, qué incluye y formulario. */
 export function CakeParty() {
   const isClient = useIsClient();
   const saved = useSavedCustomer();
@@ -67,7 +67,7 @@ export function CakeParty() {
   const deposit = Math.round(total / 2);
 
   const missing = !date
-    ? "Elige el día de tu Cake Party."
+    ? "Elige el día para decorar tu torta."
     : !slot
       ? "Elige la hora de llegada."
       : nameValue.trim().length < 2 || phoneDigits(phoneValue).length !== 10
@@ -84,14 +84,14 @@ export function CakeParty() {
   }
 
   const message = [
-    "Hola Celio mi Cielo! Quisiera reservar un Cake Party:",
+    "Hola Celio mi Cielo! Quisiera reservar Decora mi torta:",
     "",
     `Nombre: ${nameValue.trim()}`,
     `Celular: ${phoneValue.trim()}`,
     `Sede: ${sede.name}`,
     `Fecha: ${date ? longDate.format(fromIso(date)) : ""}`,
     `Hora de llegada: ${formatTime(slot)}`,
-    `Cake Party: ${parties} (${parties} ${parties === 1 ? "mini cake" : "mini cakes"})`,
+    `Mini tortas a decorar: ${parties}`,
     ...(occasion.trim() ? [`Ocasión: ${occasion.trim()}`] : []),
     "",
     `Total: ${formatPrice(total)}`,
@@ -122,7 +122,7 @@ export function CakeParty() {
             Nuestra experiencia más querida
           </p>
           <h1 id="cake-party-title" className="mt-5 font-display text-5xl leading-none tracking-[-0.03em] sm:text-7xl">
-            Cake Party
+            Decora mi torta
           </h1>
           <p className="mt-5 max-w-lg text-lg leading-8 text-leaf/85">
             Ven con tu gente y decora tu propia mini torta. Nosotros ponemos todo; tú pones la
@@ -153,7 +153,7 @@ export function CakeParty() {
               <span className="block font-display text-xl leading-none tabular-nums">
                 {formatPrice(cakeParty.price)}
               </span>
-              <span className="text-[11px] text-muted">por Cake Party</span>
+              <span className="text-[11px] text-muted">por mini torta</span>
             </div>
           </figure>
 
@@ -179,7 +179,7 @@ export function CakeParty() {
           className="self-start rounded-[2.25rem] bg-white/85 p-6 shadow-[0_40px_80px_-40px_rgba(52,68,63,0.6)] ring-1 ring-white/80 backdrop-blur-xl sm:p-8"
         >
           <h3 id="reserva-title" className="font-display text-xl">
-            Reserva tu Cake Party
+            Reserva tu mesa para decorar
           </h3>
           <p className="mt-1 text-xs text-muted">Se agenda con el abono del 50% del valor total.</p>
 
@@ -213,7 +213,7 @@ export function CakeParty() {
                 <path d="M12 7v5l3 2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <span>
-                Abierto de {formatHour(sede.opens)} a {formatHour(sede.closes)} Para tu Cake Party,
+                Abierto de {formatHour(sede.opens)} a {formatHour(sede.closes)} Para decorar tu torta,
                 llega máximo a las{" "}
                 <strong className="font-semibold text-leaf">{formatTime(sede.cakePartyLastArrival)}</strong>
               </span>
@@ -262,9 +262,9 @@ export function CakeParty() {
           <div className="mt-6 flex items-center justify-between gap-4">
             <div>
               <p id="cake-party-count" className="text-xs font-semibold">
-                ¿Cuántos Cake Party?
+                ¿Cuántas mini tortas?
               </p>
-              <p className="text-xs text-muted">Cada uno trae un mini cake; pueden decorarlo en pareja.</p>
+              <p className="text-xs text-muted">Cada una trae 1 mini torta, 1 crema, 1 relleno y 2 mangas; pueden decorarla en pareja.</p>
             </div>
             <div
               role="group"
@@ -275,7 +275,7 @@ export function CakeParty() {
                 type="button"
                 onClick={() => setParties((value) => Math.max(1, value - 1))}
                 disabled={parties <= 1}
-                aria-label="Un Cake Party menos"
+                aria-label="Una mini torta menos"
                 className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-lilac disabled:opacity-30"
               >
                 −
@@ -287,7 +287,7 @@ export function CakeParty() {
                 type="button"
                 onClick={() => setParties((value) => Math.min(cakeParty.maxParties, value + 1))}
                 disabled={parties >= cakeParty.maxParties}
-                aria-label="Un Cake Party más"
+                aria-label="Una mini torta más"
                 className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-lilac disabled:opacity-30"
               >
                 +
@@ -343,7 +343,7 @@ export function CakeParty() {
 
           <div className="mt-6 flex items-baseline justify-between border-t border-leaf/10 pt-4">
             <span className="text-sm text-muted">
-              Total · {parties} Cake Party
+              Total · {parties} {parties === 1 ? "mini torta" : "mini tortas"}
             </span>
             <span className="font-display text-2xl tabular-nums">{formatPrice(total)}</span>
           </div>

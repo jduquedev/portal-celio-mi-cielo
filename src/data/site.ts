@@ -3,11 +3,22 @@ const uploads = "https://celiomicieloreposteria.com/wp-content/uploads";
 /** Cambia a false al terminar la temporada para quitar lo navideño. */
 export const christmasSeason = true;
 
-export const logoUrl = `${uploads}/2023/09/logo_sitioweb.png`;
+/**
+ * Logo horizontal en los colores del manual de marca (pág. 11): blanco sobre lila o
+ * colores oscuros, lila sobre blanco y verde oscuro sobre fondos claros como el crema.
+ */
+export const logos = {
+  blanco: "/logo-blanco.png",
+  lila: "/logo-lila.png",
+  verde: "/logo-verde.png",
+};
+
+export const logoUrl = logos.blanco;
 
 export const social = {
   instagram: "https://www.instagram.com/celiomicieloreposteria/",
   tiktok: "https://www.tiktok.com/@celiomicielo",
+  facebook: "https://www.facebook.com/celiomicieloreposteria/",
 };
 
 export type Sede = {
@@ -120,6 +131,17 @@ export type CatalogProduct = {
   category: Category;
   note?: string;
   sizes: Size[];
+  /** Foto de una porción: aparece al pasar el cursor sobre la tarjeta. */
+  hoverImage?: string;
+  /** Si existe, el producto tiene su propia página en /tortas/[id]. */
+  details?: ProductDetails;
+};
+
+export type ProductDetails = {
+  /** Párrafo principal de la página. */
+  intro: string;
+  /** Puntos cortos: qué lleva, textura, para cuántos, etc. */
+  highlights: string[];
 };
 
 const porcion = (price: number): Size => ({ label: "Porción", price });
@@ -130,7 +152,7 @@ const entera = (price: number): Size => ({ label: "Entera", price });
 const tortaEntera = (price: number): Size => ({ label: "Entera", detail: "10-16 porciones", price });
 const unit = (label: string, price: number): Size => ({ label, price });
 
-const products: CatalogProduct[] = [
+export const products: CatalogProduct[] = [
   // Tortas
   {
     id: "birthday-cake",
@@ -143,21 +165,54 @@ const products: CatalogProduct[] = [
     id: "red-velvet",
     name: "Red Velvet",
     image: `${uploads}/2023/09/redvelvet.jpg`,
+    hoverImage: "/productos/red-velvet-porcion.webp",
     category: "tortas",
+    // TODO: confirmar textos con el negocio.
+    details: {
+      intro:
+        "Nuestra red velvet de siempre: bizcocho rojo aterciopelado, suave y húmedo, con capas de frosting de queso crema. Equilibrada en dulce, como todas nuestras tortas.",
+      highlights: [
+        "Bizcocho red velvet con frosting de queso crema",
+        "Horneada todos los días, sin conservantes",
+        "Pequeña (2-4), mediana (4-8) o entera (10-16 porciones)",
+      ],
+    },
     sizes: [pequena(31000), mediana(51000), tortaEntera(80000)],
   },
   {
     id: "chocolate-con-arequipe",
     name: "Chocolate con arequipe",
     image: `${uploads}/2023/09/chocolate.jpg`,
+    hoverImage: "/productos/chocolate-con-arequipe-porcion.webp",
     category: "tortas",
+    // TODO: confirmar textos con el negocio.
+    details: {
+      intro:
+        "Bizcocho de chocolate muy esponjoso, relleno y cubierto de arequipe. La favorita de los que aman el chocolate, sin llegar a ser empalagosa.",
+      highlights: [
+        "Bizcocho de chocolate con arequipe en el relleno y por encima",
+        "Horneada todos los días, sin conservantes",
+        "Pequeña (2-4), mediana (4-8) o entera (10-16 porciones)",
+      ],
+    },
     sizes: [pequena(26500), mediana(49000), tortaEntera(85000)],
   },
   {
     id: "platano-maduro",
     name: "Plátano maduro, bocadillo y queso cuajada",
     image: `${uploads}/2023/09/maduro-y-queso.jpg`,
+    hoverImage: "/productos/platano-maduro-porcion.webp",
     category: "tortas",
+    // TODO: confirmar textos con el negocio.
+    details: {
+      intro:
+        "Una torta bien nuestra: bizcocho de plátano maduro con trocitos de bocadillo y queso cuajada. El dulce del maduro y el toque salado del queso, en cada bocado.",
+      highlights: [
+        "Plátano maduro, bocadillo y queso cuajada",
+        "Horneada todos los días, sin conservantes",
+        "Pequeña (2-4), mediana (4-8) o entera (10-16 porciones)",
+      ],
+    },
     sizes: [pequena(28000), mediana(58000), tortaEntera(88000)],
   },
   {
@@ -178,8 +233,19 @@ const products: CatalogProduct[] = [
   {
     id: "zanahoria-queso-crema",
     name: "Zanahoria con frosting de queso crema",
-    image: `${uploads}/2023/09/zanahoria.jpg`,
+    image: "/productos/zanahoria-queso-crema.webp",
+    hoverImage: "/productos/zanahoria-queso-crema-porcion.webp",
     category: "tortas",
+    // TODO: confirmar textos con el negocio.
+    details: {
+      intro:
+        "Bizcocho de zanahoria húmedo y aromático, en capas con frosting de queso crema. Un clásico casero que nunca falla.",
+      highlights: [
+        "Bizcocho de zanahoria con frosting de queso crema",
+        "Horneada todos los días, sin conservantes",
+        "Pequeña (2-4), mediana (4-8) o entera (10-16 porciones)",
+      ],
+    },
     sizes: [pequena(36000), mediana(58000), tortaEntera(93000)],
   },
   {
@@ -224,6 +290,16 @@ const products: CatalogProduct[] = [
     name: "Brownie de Milo melcochudo",
     image: `${uploads}/2023/09/brownie.jpg`,
     category: "postres",
+    // TODO: confirmar textos con el negocio.
+    details: {
+      intro:
+        "Nuestro brownie con Milo: melcochudo por dentro, con esa textura que se pega un poquito al diente. Perfecto para el antojo o para regalar en caja.",
+      highlights: [
+        "Brownie de chocolate con Milo, de textura melcochuda",
+        "Horneado todos los días, sin conservantes",
+        "Individual o en caja de 4 o de 6",
+      ],
+    },
     sizes: [unit("Individual", 8200), unit("Caja x 4", 32500), unit("Caja x 6", 63000)],
   },
   // Galletas
@@ -349,15 +425,13 @@ export function getProduct(id: string): CatalogProduct {
   return product;
 }
 
-export const bestSellers = [
-  "birthday-cake",
-  "alfajores",
+/** Sección "Los favoritos" de la portada. */
+export const favorites = [
   "red-velvet",
-  "platano-maduro",
-  "cheesecake-red-velvet",
   "chocolate-con-arequipe",
+  "zanahoria-queso-crema",
+  "platano-maduro",
   "brownie-milo",
-  "tres-leches",
 ].map(getProduct);
 
 export const christmasProducts = [
@@ -391,76 +465,106 @@ export function formatPrice(price: number) {
 export type HeroSlide = {
   src: string;
   alt: string;
-  caption: string;
+  /** Nombre corto que se muestra en el hero mientras esta foto está en pantalla. */
+  title: string;
+  description: string;
+  /** Producto que se agrega al pedido desde el hero con esta foto. */
+  product: CatalogProduct;
   /** Foto panorámica con espacio libre a la izquierda: cubre todo el ancho del hero. */
   fullBleed?: boolean;
   /** Proporción ancho/alto de la foto panorámica (por ejemplo 1993 / 789). */
   ratio?: number;
-  /** Clases extra para encuadrar la foto dentro del círculo. */
+  /** Clases extra para encuadrar la foto. */
   imageClassName?: string;
+  /**
+   * Color del fondo de la foto en RGB ("149 1 6"), medido en su borde izquierdo. El
+   * hero toma este color mientras la foto está en pantalla, para que no se note
+   * dónde termina la foto.
+   */
+  background?: string;
 };
 
 export type Feature = {
   eyebrow: string;
-  title: string;
-  description: string;
-  product: CatalogProduct;
-  /** Fotos que rotan en el círculo del hero. La primera es la principal. */
+  /**
+   * Fotos que rotan en el hero. Cada una trae su producto: el nombre, el texto y el
+   * selector de tamaño del hero cambian con la foto. La primera es la principal.
+   */
   slides: HeroSlide[];
 };
 
 /**
- * Para usar fotos propias (por ejemplo, las originales de Instagram), guárdalas en
- * public/hero/ y usa su ruta aquí, por ejemplo: src: "/hero/pastores-mesa.jpg".
+ * Para usar fotos propias, guárdalas en public/navidad/ (o public/hero/) y usa su
+ * ruta aquí, por ejemplo: src: "/navidad/pastores-mesa.webp".
  */
 export const christmasFeature: Feature = {
   eyebrow: "Edición Navidad",
-  title: "Torta de Pastores",
-  description:
-    "La consentida de nuestra mesa de diciembre. Horneada a mano, sin conservantes y lista para compartir en familia.",
-  product: getProduct("torta-de-pastores"),
-  // Fotos del catálogo de Navidad (4:3). En escritorio ocupan el lado derecho del
-  // hero y se difuminan hacia el verde por la izquierda.
+  // Fotos anchas del hero (public/navidad/hero), con espacio alrededor del producto.
+  // En escritorio ocupan el lado derecho y se difuminan hacia el rojo por la izquierda.
   slides: [
     {
-      src: "/navidad/torta-de-pastores.webp",
+      src: "/navidad/hero/torta-de-pastores.webp",
+      background: "149 1 6",
       alt: "Torta de Pastores en forma de corona, con brevas y frutas confitadas",
-      caption: "Torta de Pastores",
+      title: "Torta de Pastores",
+      description:
+        "La consentida de nuestra mesa de diciembre. Horneada a mano, sin conservantes y lista para compartir en familia.",
+      product: getProduct("torta-de-pastores"),
     },
     {
-      src: "/navidad/coronas-y-cajas.webp",
-      alt: "Coronas navideñas de chocolate y red velvet junto a cajas de galletas",
-      caption: "Coronas y cajas navideñas",
-    },
-    {
-      src: "/navidad/corona-red-velvet.webp",
+      src: "/navidad/hero/corona-red-velvet.webp",
+      background: "129 1 4",
       alt: "Corona navideña red velvet con frosting de queso crema y moño rojo",
-      caption: "Corona Red Velvet",
+      title: "Corona Red Velvet",
+      description: "Torta red velvet coronada con frosting de queso crema. En porción o para 6 a 8 personas.",
+      product: getProduct("corona-red-velvet"),
     },
     {
-      src: "/navidad/corona-chocolate.webp",
+      src: "/navidad/hero/corona-chocolate.webp",
+      background: "163 1 6",
       alt: "Corona navideña de chocolate con ganache y moño rojo",
-      caption: "Corona de Chocolate",
+      title: "Corona de Chocolate",
+      description:
+        "Torta de chocolate decorada con ganache de chocolate semiamargo. En porción o para 6 a 8 personas.",
+      product: getProduct("corona-chocolate"),
     },
     {
-      src: "/navidad/caja-navidad-grande.webp",
+      src: "/navidad/hero/tiramisu-consciente.webp",
+      background: "189 5 8",
+      alt: "Tiramisú con un árbol de Navidad dibujado en cacao",
+      title: "Tiramisú Consciente",
+      description: "Endulzado con alulosa y hecho con harina de almendras y arroz. Para 10 a 16 personas.",
+      product: getProduct("tiramisu-consciente"),
+    },
+    {
+      src: "/navidad/hero/casita-de-jengibre.webp",
+      background: "167 2 8",
+      alt: "Casita de jengibre decorada junto a sus piezas, mangas y dulces",
+      title: "Casita de jengibre",
+      description: "El kit para armarla y decorarla en casa: piezas de galleta, mangas, masmelos y grageas.",
+      product: getProduct("casita-de-jengibre"),
+    },
+    {
+      src: "/navidad/hero/caja-navidad-grande.webp",
+      background: "159 2 8",
       alt: "Caja dorada con galletas, alfajores, polvorosas y brownie",
-      caption: "Caja Navidad Grande",
+      title: "Caja Navidad Grande",
+      description: "Galletas, alfajores, polvorosas y un brownie grande en una caja dorada para regalar.",
+      product: getProduct("caja-navidad-grande"),
     },
   ],
 };
 
 export const defaultFeature: Feature = {
   eyebrow: "Repostería artesanal en Cali",
-  title: "El cielo en cada porción",
-  description:
-    "Tortas equilibradas en dulce, muy esponjosas y horneadas todos los días, sin conservantes.",
-  product: getProduct("red-velvet"),
   slides: [
     {
       src: `${uploads}/2023/09/redvelvet.jpg`,
       alt: "Torta Red Velvet",
-      caption: "Red Velvet",
+      title: "El cielo en cada porción",
+      description:
+        "Tortas equilibradas en dulce, muy esponjosas y horneadas todos los días, sin conservantes.",
+      product: getProduct("red-velvet"),
     },
   ],
 };
@@ -489,13 +593,13 @@ export const values = [
 ];
 
 // ---------------------------------------------------------------------------
-// Cake Party: actividad para decorar tu propia mini torta
+// Decora mi torta (antes "Cake Party"): actividad para decorar tu propia mini torta
 // ---------------------------------------------------------------------------
 
 export const cakeParty = {
-  /** Precio por Cake Party: incluye un mini cake, que se puede decorar en pareja. */
+  /** Precio por mini torta. Las cantidades van explícitas para evitar malentendidos. */
   price: 78000,
-  includes: ["Mini cake", "Crema", "Relleno", "Mangas", "Utensilios", "Colorantes"],
-  /** Máximo de Cake Party que se pueden reservar desde la página. */
+  includes: ["1 mini torta", "1 crema", "1 relleno", "2 mangas", "Utensilios", "Colorantes"],
+  /** Máximo de mini tortas que se pueden reservar desde la página. */
   maxParties: 12,
 };
