@@ -8,7 +8,6 @@ const links = [
   { href: "/#productos", label: "Productos" },
   { href: "/cake-party", label: "Cake Party" },
   { href: "/#como-pedir", label: "Cómo pedir" },
-  { href: "/#experiencias", label: "Experiencias" },
   { href: "/#empresas", label: "Empresas" },
   { href: "/#sedes", label: "Sedes" },
 ];

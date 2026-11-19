@@ -25,9 +25,9 @@
 - [ ] Ítems y precios de café, sándwiches y almuerzos (los menús PDF son de oct. 2024).
 - [ ] Confirmar que la sede Ciudad Jardín es La Leyenda Mall, y su enlace exacto de Google Maps.
 - [ ] Confirmar precios vigentes (hoy se toman de la tienda actual).
-- [ ] Revisar textos escritos para la web (Experiencias, descripción de la Torta de Pastores, títulos).
+- [ ] Revisar textos escritos para la web (descripción de la Torta de Pastores, títulos).
 - [ ] Logo original en buena calidad (sello lavanda con flor).
-- [ ] Fotos originales: productos, Torta de Pastores con fondo neutro, talleres, local.
+- [ ] Fotos originales: productos, Torta de Pastores con fondo neutro, local.
 
 ## Pendientes técnicos
 - [ ] Copiar las imágenes al proyecto (hoy se cargan desde el WordPress actual).

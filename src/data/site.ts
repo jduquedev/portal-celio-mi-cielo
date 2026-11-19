@@ -469,26 +469,6 @@ export const defaultFeature: Feature = {
 // Contenido
 // ---------------------------------------------------------------------------
 
-export const experiences = [
-  {
-    title: "Cake Party",
-    text: "Somos el primer decora tu mini torta en Cali. Te sientas, eliges y la vuelves tuya.",
-    href: "/cake-party",
-    cta: "Reservar",
-    message: "Hola Celio mi Cielo! Quisiera información sobre Decora tu mini torta.",
-  },
-  {
-    title: "Talleres",
-    text: "Planes para aprender repostería con las manos en la masa, solo o en compañía.",
-    message: "Hola Celio mi Cielo! Quisiera información sobre los talleres.",
-  },
-  {
-    title: "Eventos empresariales",
-    text: "Llevamos la experiencia a tu equipo, para celebrar de una forma diferente.",
-    message: "Hola Celio mi Cielo! Quisiera información sobre eventos empresariales.",
-  },
-];
-
 export const values = [
   {
     title: "Equilibrio",

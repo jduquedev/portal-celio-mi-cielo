@@ -1,7 +1,6 @@
 import { CakePartyTeaser } from "@/components/CakePartyTeaser";
 import { ChristmasProducts } from "@/components/ChristmasProducts";
 import { Corporate } from "@/components/Corporate";
-import { Experiences } from "@/components/Experiences";
 import { Hero } from "@/components/Hero";
 import { HowToOrder } from "@/components/HowToOrder";
 import { Products } from "@/components/Products";
@@ -33,7 +32,6 @@ export default function Home() {
       {christmasSeason && <ChristmasProducts products={christmasProducts} />}
       <CakePartyTeaser />
       <HowToOrder />
-      <Experiences />
       <Corporate />
       <Values />
       <Sedes />
