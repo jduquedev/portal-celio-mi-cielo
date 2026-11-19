@@ -17,25 +17,24 @@ type ChristmasProductsProps = {
   products: CatalogProduct[];
 };
 
-/** Vitrina de temporada: fondo verde profundo, estrellas y pino, tarjetas en arco. */
+/**
+ * Vitrina de temporada: fotos grandes sobre el degradado protagonista de la temporada
+ * (vino → ciruela → morado oscuro, el mismo del hero). El dorado solo en detalles:
+ * estrellas, marco fino y etiqueta.
+ */
 export function ChristmasProducts({ products }: ChristmasProductsProps) {
   return (
     <section
       id="navidad"
       aria-labelledby="navidad-title"
-      className="relative scroll-mt-24 overflow-hidden bg-leaf-deep text-white"
+      className="relative scroll-mt-24 overflow-hidden bg-linear-to-br from-vino via-ciruela to-morado-oscuro text-crema"
     >
-      {/* Brillo cálido detrás de los productos */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_50%_0%,rgb(209_186_219/0.18),transparent_70%)]"
-      />
-      <PineSprig className="pointer-events-none absolute -left-8 -top-6 w-44 rotate-90 text-sage/25 sm:w-60" />
-      <PineSprig className="pointer-events-none absolute -bottom-6 -right-8 w-44 -rotate-90 text-sage/25 sm:w-60" />
+      <PineSprig className="pointer-events-none absolute -left-8 -top-6 w-44 rotate-90 text-dorado/25 sm:w-60" />
+      <PineSprig className="pointer-events-none absolute -bottom-6 -right-8 w-44 -rotate-90 text-dorado/25 sm:w-60" />
       {stars.map((star) => (
         <Star
           key={`${star.top}-${star.left}`}
-          className="pointer-events-none absolute text-lavender"
+          className="pointer-events-none absolute text-dorado"
           style={{
             top: `${star.top}%`,
             left: `${star.left}%`,
@@ -48,44 +47,47 @@ export function ChristmasProducts({ products }: ChristmasProductsProps) {
 
       <div className="relative mx-auto w-full max-w-6xl px-4 py-20 sm:px-6 md:py-28">
         <div className="mx-auto max-w-xl text-center">
-          <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-lavender">
+          <p className="inline-flex items-center gap-2 rounded-full bg-dorado/15 px-3 py-1 text-xs font-semibold text-dorado ring-1 ring-dorado/30">
             <Star className="h-3 w-3" />
             Temporada de Navidad
           </p>
           <h2 id="navidad-title" className="mt-5 font-display text-3xl sm:text-5xl">
             Para tu mesa de Navidad
           </h2>
-          <p className="mt-4 text-base text-white/70">
+          <p className="mt-4 text-base text-crema/70">
             Los sabores de diciembre, listos para compartir en familia.
           </p>
         </div>
 
-        {/* Flex en vez de grid para que la última fila, si queda incompleta, se centre. */}
-        <ul className="mt-14 flex flex-wrap justify-center gap-x-4 gap-y-12 sm:gap-x-6">
+        {/*
+          Flex en vez de grid para que la última fila, si queda incompleta, se centre.
+          De a 3 en escritorio: fotos más grandes.
+        */}
+        <ul className="mt-14 flex flex-wrap justify-center gap-x-4 gap-y-14 sm:gap-x-8">
           {products.map((product) => (
             <li
               key={product.id}
-              className="flex w-[calc(50%-0.5rem)] flex-col sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]"
+              className="flex w-[calc(50%-0.5rem)] flex-col sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)]"
             >
-              <div className="relative rounded-t-full rounded-b-[1.75rem] p-1.5 ring-1 ring-lavender/35">
-                <div className="group relative aspect-[4/5] overflow-hidden rounded-t-full rounded-b-3xl bg-leaf">
+              <div className="relative rounded-t-full rounded-b-[1.75rem] p-1.5 ring-1 ring-dorado/45">
+                <div className="group relative aspect-[4/5] overflow-hidden rounded-t-full rounded-b-3xl bg-white/5">
                   <Image
                     src={product.image}
                     alt={product.name}
                     fill
-                    sizes={product.imagePosition ? "(min-width: 1024px) 60vw, 130vw" : "(min-width: 1024px) 25vw, 50vw"}
+                    sizes={product.imagePosition ? "(min-width: 1024px) 70vw, 130vw" : "(min-width: 1024px) 33vw, 50vw"}
                     className={`object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none ${product.imagePosition ?? ""}`}
                   />
                 </div>
-                <span className="absolute -bottom-3 left-1/2 inline-flex -translate-x-1/2 items-center gap-1 whitespace-nowrap rounded-full bg-lavender px-3 py-1 text-[11px] font-semibold text-leaf-deep shadow-sm">
+                <span className="absolute -bottom-3 left-1/2 inline-flex -translate-x-1/2 items-center gap-1 whitespace-nowrap rounded-full bg-dorado px-3 py-1 text-[11px] font-semibold text-chocolate shadow-sm">
                   <Star className="h-2.5 w-2.5" />
                   Temporada
                 </span>
               </div>
-              <h3 className="mt-7 mb-3 flex-1 text-center font-display text-[15px] leading-snug sm:text-base">
+              <h3 className="mt-7 mb-3 flex-1 text-center font-display text-[15px] leading-snug sm:text-lg">
                 {product.name}
               </h3>
-              <AddToCart product={product} tone="dark" />
+              <AddToCart product={product} tone="festive" />
             </li>
           ))}
         </ul>

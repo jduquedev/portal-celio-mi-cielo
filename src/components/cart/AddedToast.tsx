@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect } from "react";
-import { findProduct } from "@/data/site";
+import { christmasSeason, findProduct } from "@/data/site";
 import { cartCount, dismissNotice, setCartOpen, useCart } from "@/lib/cart";
 
 /** Tiempo que el aviso queda en pantalla, en milisegundos. */
@@ -63,7 +63,10 @@ export function AddedToast() {
         <button
           type="button"
           onClick={() => setCartOpen(true)}
-          className="rounded-full bg-leaf py-2.5 text-xs font-semibold text-white transition-[background-color,transform] hover:bg-leaf-deep active:scale-[0.98]"
+          // En Navidad, chocolate con texto crema, como los demás botones del carrito.
+          className={`rounded-full py-2.5 text-xs font-semibold transition-[background-color,transform] active:scale-[0.98] ${
+            christmasSeason ? "bg-chocolate text-crema hover:bg-vino" : "bg-leaf text-white hover:bg-leaf-deep"
+          }`}
         >
           Ver pedido
         </button>

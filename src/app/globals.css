@@ -9,8 +9,21 @@
   --color-sage: #6daf98;
   --color-sage-ink: #4a8670;
   --color-lavender: #d1badb;
-  /* Rojo del fondo de terciopelo de las fotos de Navidad. */
-  --color-velvet: #96040a;
+  /*
+   * Paleta de temporada de Navidad, «pastelería elegante». El morado oficial de la
+   * marca se conserva y se combina con el vino mediante degradados:
+   * - vino → ciruela → morado oscuro: secciones protagonistas (hero).
+   * - lavanda clara → lila: banners informativos y promociones.
+   * El dorado queda solo para detalles: etiquetas, indicadores y adornos.
+   */
+  --color-vino: #6f1d2a;
+  --color-ciruela: #4a1f3d;
+  --color-morado-oscuro: #3a2752;
+  --color-morado: #a78bc9;
+  --color-lavanda-clara: #ede4f5;
+  --color-crema: #f6efe5;
+  --color-dorado: #c5a46d;
+  --color-chocolate: #302522;
   --color-ink: #444444;
   --color-muted: #666666;
   --font-sans: var(--font-poppins);
@@ -21,13 +34,13 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Color del hero en RGB, para el difuminado de sus fotos. Navidad lo cambia a rojo. */
+/* Color del hero en RGB, para el difuminado de sus fotos. En Navidad pasa a vino. */
 :root {
   --hero-rgb: 68 88 84;
 }
 
 .hero-festive {
-  --hero-rgb: 150 4 10;
+  --hero-rgb: 111 29 42;
 }
 
 body {
@@ -70,7 +83,7 @@ body {
 
 /*
  * Difuminado de las fotos del hero hacia el color del hero (--hero-rgb): verde de
- * la marca por defecto, rojo terciopelo en temporada de Navidad.
+ * la marca por defecto, vino en temporada de Navidad.
  * Curva suave con varias paradas en vez de una línea recta: así no queda una
  * franja grisácea sobre la foto. Abajo en celular, a la izquierda en escritorio.
  */

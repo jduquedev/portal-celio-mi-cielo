@@ -298,6 +298,16 @@ const products: CatalogProduct[] = [
     sizes: [unit("Kit", 75000)],
   },
   {
+    id: "galleta-de-regalo",
+    name: "Galleta de regalo con tarjeta",
+    image: "/navidad/galleta-de-regalo.webp",
+    imagePosition: "object-[40%_50%]",
+    category: "navidad",
+    note: "Empacada con moño y tarjeta de Feliz Navidad (Para / De)",
+    // Mismo precio en los dos sabores: el selector sirve para escoger el sabor.
+    sizes: [unit("Grageas", 6500), unit("Red Velvet", 6500)],
+  },
+  {
     id: "caja-navidad-mini",
     name: "Caja Navidad Mini",
     image: "/navidad/caja-navidad-mini.webp",
@@ -358,6 +368,7 @@ export const christmasProducts = [
   "tiramisu-consciente",
   "pan-de-jamon",
   "casita-de-jengibre",
+  "galleta-de-regalo",
   "caja-navidad-mini",
   "caja-navidad-mediana",
   "caja-celio-especial",

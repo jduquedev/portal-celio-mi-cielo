@@ -23,6 +23,8 @@ function usePageVisible() {
 
 type HeroCarouselProps = {
   slides: Slide[];
+  /** Temporada de Navidad: controles en chocolate con indicador dorado. */
+  festive?: boolean;
   /** Posición y tamaño del bloque de fotos dentro del hero. */
   className?: string;
 };
@@ -31,7 +33,7 @@ type HeroCarouselProps = {
  * Fotos de fondo del hero: rotan con un fundido lento y un zoom suave, y se
  * difuminan hacia el color del hero para que el texto se lea sin cajas.
  */
-export function HeroCarousel({ slides, className }: HeroCarouselProps) {
+export function HeroCarousel({ slides, festive = false, className }: HeroCarouselProps) {
   const [{ index, previous }, setSlide] = useState<{ index: number; previous: number | null }>({
     index: 0,
     previous: null,
@@ -127,7 +129,11 @@ export function HeroCarousel({ slides, className }: HeroCarouselProps) {
       })}
 
       {slides.length > 1 && (
-        <div className="absolute right-4 top-4 flex items-center gap-3 rounded-full bg-leaf-deep/45 py-1.5 pl-4 pr-1.5 text-white backdrop-blur-md md:bottom-8 md:right-28 md:top-auto">
+        <div
+          className={`absolute right-4 top-4 flex items-center gap-3 rounded-full py-1.5 pl-4 pr-1.5 backdrop-blur-md md:bottom-8 md:right-28 md:top-auto ${
+            festive ? "bg-chocolate/55 text-crema" : "bg-leaf-deep/45 text-white"
+          }`}
+        >
           <p className="text-xs font-semibold" aria-live={autoplay ? "off" : "polite"}>
             {slides[index].caption}
           </p>
@@ -143,7 +149,9 @@ export function HeroCarousel({ slides, className }: HeroCarouselProps) {
               >
                 <span
                   className={`block h-1.5 rounded-full transition-[width,background-color] duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] ${
-                    i === index ? "w-5 bg-lavender" : "w-1.5 bg-white/45"
+                    i === index
+                      ? `w-5 ${festive ? "bg-dorado" : "bg-lavender"}`
+                      : "w-1.5 bg-white/45"
                   }`}
                 />
               </button>

@@ -18,9 +18,42 @@ function columns(count: number, compact: boolean) {
   return "grid-cols-2";
 }
 
+const tones = {
+  light: {
+    track: "bg-leaf/[0.07]",
+    selected: "bg-white text-leaf shadow-[0_1px_3px_rgba(68,88,84,0.18)]",
+    idle: "text-muted hover:text-leaf",
+    price: "text-leaf",
+    detail: "text-muted",
+    button: "bg-leaf text-white hover:bg-leaf-deep",
+    buttonAdded: "bg-sage-ink text-white",
+  },
+  dark: {
+    track: "bg-white/10",
+    selected: "bg-lavender text-leaf-deep shadow-sm",
+    idle: "text-white/70 hover:text-white",
+    price: "text-white",
+    detail: "text-white/60",
+    button: "bg-lavender text-leaf-deep hover:bg-white",
+    buttonAdded: "bg-lavender text-leaf-deep hover:bg-white",
+  },
+  // Navidad sobre el degradado vino (hero y catálogo): todo en crema. El dorado
+  // queda para detalles.
+  festive: {
+    track: "bg-crema/10",
+    selected: "bg-crema text-vino shadow-sm",
+    idle: "text-crema/70 hover:text-crema",
+    price: "text-crema",
+    detail: "text-crema/60",
+    button: "bg-crema text-vino hover:bg-white",
+    buttonAdded: "bg-white text-vino",
+  },
+};
+
 type AddToCartProps = {
   product: CatalogProduct;
-  tone?: "light" | "dark";
+  /** light: fondo claro; dark: fondo verde; festive: degradado vino de Navidad. */
+  tone?: keyof typeof tones;
   /** Versión más pequeña, para las filas del menú. */
   compact?: boolean;
   /** Hay espacio de sobra (por ejemplo, en el hero): todos los tamaños en una fila. */
@@ -32,7 +65,7 @@ export function AddToCart({ product, tone = "light", compact = false, wide = fal
   const [added, setAdded] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const size = product.sizes[sizeIndex];
-  const dark = tone === "dark";
+
 
   useEffect(() => () => clearTimeout(timer.current), []);
 
@@ -43,15 +76,8 @@ export function AddToCart({ product, tone = "light", compact = false, wide = fal
     timer.current = setTimeout(() => setAdded(false), 1600);
   }
 
-  const track = dark ? "bg-white/10" : "bg-leaf/[0.07]";
-  const option = (selected: boolean) =>
-    selected
-      ? dark
-        ? "bg-lavender text-leaf-deep shadow-sm"
-        : "bg-white text-leaf shadow-[0_1px_3px_rgba(68,88,84,0.18)]"
-      : dark
-        ? "text-white/70 hover:text-white"
-        : "text-muted hover:text-leaf";
+  const styles = tones[tone];
+  const option = (selected: boolean) => (selected ? styles.selected : styles.idle);
 
   return (
     <div>
@@ -59,7 +85,7 @@ export function AddToCart({ product, tone = "light", compact = false, wide = fal
         <div
           role="radiogroup"
           aria-label={`Presentación de ${product.name}`}
-          className={`grid w-full gap-0.5 rounded-2xl p-1 ${columns(product.sizes.length, compact || wide)} ${track}`}
+          className={`grid w-full gap-0.5 rounded-2xl p-1 ${columns(product.sizes.length, compact || wide)} ${styles.track}`}
         >
           {product.sizes.map((item, index) => {
             const selected = index === sizeIndex;
@@ -88,11 +114,11 @@ export function AddToCart({ product, tone = "light", compact = false, wide = fal
       <div
         className={`flex items-center justify-between gap-x-3 gap-y-2 max-sm:flex-wrap ${compact ? "mt-2" : "mt-3"}`}
       >
-        <p className={`min-w-0 ${dark ? "text-white" : "text-leaf"}`}>
+        <p className={`min-w-0 ${styles.price}`}>
           <span className={`block font-semibold leading-tight tabular-nums ${compact ? "text-sm" : "text-base"}`}>
             {formatPrice(size.price)}
           </span>
-          <span className={`block min-h-4 text-xs leading-4 ${dark ? "text-white/60" : "text-muted"}`}>
+          <span className={`block min-h-4 text-xs leading-4 ${styles.detail}`}>
             {size.detail ?? (product.sizes.length === 1 ? size.label : " ")}
           </span>
         </p>
@@ -103,11 +129,7 @@ export function AddToCart({ product, tone = "light", compact = false, wide = fal
           className={`flex shrink-0 items-center gap-1.5 rounded-full font-semibold transition-[background-color,transform] duration-200 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage ${
             compact ? "h-8 px-3 text-xs" : "h-9 px-4 text-xs"
           } ${!compact && !wide ? "max-sm:w-full max-sm:justify-center" : ""} ${
-            dark
-              ? "bg-lavender text-leaf-deep hover:bg-white"
-              : added
-                ? "bg-sage-ink text-white"
-                : "bg-leaf text-white hover:bg-leaf-deep"
+            added ? styles.buttonAdded : styles.button
           }`}
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" aria-hidden="true" className="h-3.5 w-3.5">
