@@ -12,9 +12,10 @@
   /*
    * Paleta de temporada de Navidad, «pastelería elegante». El morado oficial de la
    * marca se conserva y se combina con el vino mediante degradados:
-   * - vino → ciruela → morado oscuro: secciones protagonistas (hero).
-   * - lavanda clara → lila: banners informativos y promociones.
-   * El dorado queda solo para detalles: etiquetas, indicadores y adornos.
+   * - vino → ciruela → morado oscuro: hero y banner de Rappi.
+   * - lavanda clara → lila: banner de Rappi fuera de temporada.
+   * - crema: fondo del catálogo, para que las fotos sean protagonistas.
+   * El dorado queda para detalles: etiquetas, indicadores y adornos.
    */
   --color-vino: #6f1d2a;
   --color-ciruela: #4a1f3d;
@@ -130,3 +131,4 @@ body {
     mask-image: linear-gradient(to right, transparent 0%, #000 22%);
   }
 }
+

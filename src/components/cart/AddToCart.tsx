@@ -37,8 +37,7 @@ const tones = {
     button: "bg-lavender text-leaf-deep hover:bg-white",
     buttonAdded: "bg-lavender text-leaf-deep hover:bg-white",
   },
-  // Navidad sobre el degradado vino (hero y catálogo): todo en crema. El dorado
-  // queda para detalles.
+  // Navidad sobre el degradado vino del hero: todo en crema.
   festive: {
     track: "bg-crema/10",
     selected: "bg-crema text-vino shadow-sm",
@@ -48,11 +47,21 @@ const tones = {
     button: "bg-crema text-vino hover:bg-white",
     buttonAdded: "bg-white text-vino",
   },
+  // Navidad sobre el crema del catálogo: botón en vino, textos en chocolate.
+  festiveLight: {
+    track: "bg-chocolate/[0.06]",
+    selected: "bg-white text-vino shadow-[0_1px_3px_rgba(48,37,34,0.18)]",
+    idle: "text-chocolate/60 hover:text-vino",
+    price: "text-chocolate",
+    detail: "text-chocolate/60",
+    button: "bg-vino text-crema hover:bg-chocolate",
+    buttonAdded: "bg-chocolate text-crema",
+  },
 };
 
 type AddToCartProps = {
   product: CatalogProduct;
-  /** light: fondo claro; dark: fondo verde; festive: degradado vino de Navidad. */
+  /** light: fondo claro; dark: verde; festive: vino de Navidad; festiveLight: crema. */
   tone?: keyof typeof tones;
   /** Versión más pequeña, para las filas del menú. */
   compact?: boolean;

@@ -21,8 +21,7 @@
 - Sin pagos en línea por ahora.
 
 ## Pendientes de información
-- [ ] Enlaces de Rappi por sede: pegarlos en `rappi` de cada sede en `src/data/site.ts`
-      (el apartado "¿Se te antojó para hoy?" y el botón en Sedes aparecen solos al tenerlos).
+- [x] Enlaces de Rappi por sede (Aquarela y Ciudad Jardín) en `src/data/site.ts`.
 - [ ] Ítems y precios de café, sándwiches y almuerzos (los menús PDF son de oct. 2024).
 - [ ] Confirmar que la sede Ciudad Jardín es La Leyenda Mall, y su enlace exacto de Google Maps.
 - [ ] Confirmar precios vigentes (hoy se toman de la tienda actual).

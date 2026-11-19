@@ -4,25 +4,37 @@ import { christmasSeason, sedes } from "@/data/site";
  * Pedidos inmediatos por Rappi para quien está cerca de una sede.
  * Solo aparece si al menos una sede tiene su enlace de Rappi en site.ts.
  *
- * Banner informativo: degradado suave de lavanda clara a lila, el tratamiento
- * reservado para promociones (el vino con morado oscuro es para el hero).
+ * En Navidad lleva el mismo degradado del hero (vino → ciruela → morado oscuro) con
+ * textos en crema; el resto del año, lavanda clara a lila.
  */
 export function Rappi() {
   const withRappi = sedes.filter((sede) => sede.rappi);
   if (withRappi.length === 0) return null;
 
-  const text = christmasSeason
-    ? { title: "text-chocolate", body: "text-chocolate/75", card: "bg-crema text-chocolate hover:bg-white" }
-    : { title: "text-leaf", body: "text-leaf/80", card: "bg-white text-leaf hover:bg-cream" };
+  const theme = christmasSeason
+    ? {
+        box: "bg-linear-to-br from-vino via-ciruela to-morado-oscuro",
+        title: "text-crema",
+        body: "text-crema/80",
+        card: "bg-crema text-chocolate hover:bg-white",
+      }
+    : {
+        box: "bg-linear-to-br from-lavanda-clara to-lavender",
+        title: "text-leaf",
+        body: "text-leaf/80",
+        card: "bg-white text-leaf hover:bg-cream",
+      };
 
   return (
     <section aria-labelledby="rappi-title" className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6 md:pb-28">
-      <div className="flex flex-col gap-6 rounded-[2rem] bg-linear-to-br from-lavanda-clara to-lavender px-6 py-8 sm:px-10 md:flex-row md:items-center md:justify-between">
+      <div
+        className={`flex flex-col gap-6 rounded-[2rem] px-6 py-8 sm:px-10 md:flex-row md:items-center md:justify-between ${theme.box}`}
+      >
         <div className="max-w-md">
-          <h2 id="rappi-title" className={`font-display text-2xl sm:text-3xl ${text.title}`}>
+          <h2 id="rappi-title" className={`font-display text-2xl sm:text-3xl ${theme.title}`}>
             ¿Se te antojó para hoy?
           </h2>
-          <p className={`mt-2 text-sm leading-6 ${text.body}`}>
+          <p className={`mt-2 text-sm leading-6 ${theme.body}`}>
             Si estás cerca de una sede, pide lo que hay en vitrina por Rappi y te llega sin esperar
             los días de anticipación.
           </p>
@@ -34,7 +46,7 @@ export function Rappi() {
                 href={sede.rappi}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`flex items-center justify-between gap-4 rounded-2xl px-5 py-3.5 transition-[background-color,transform] active:scale-[0.98] sm:min-w-52 ${text.card}`}
+                className={`flex items-center justify-between gap-4 rounded-2xl px-5 py-3.5 transition-[background-color,transform] active:scale-[0.98] sm:min-w-52 ${theme.card}`}
               >
                 <span>
                   <span className="block text-xs text-muted">Pedir en Rappi</span>

@@ -67,7 +67,7 @@ export const sedes: Sede[] = [
     whatsapp: "573127185385",
     maps: "https://www.google.com/maps/search/?api=1&query=La+Leyenda+Mall+Cali",
     menu: `${uploads}/2024/10/MENU-CIUDAD-JARDIN-comprimido.pdf`,
-    rappi: "", // TODO: pegar aquí el enlace de Rappi de Ciudad Jardín
+    rappi: "https://www.rappi.com.co/restaurantes/900425804-celio-mi-cielo-reposteria",
     delivers: false,
     opens: "11:00",
     closes: "20:00",
@@ -301,7 +301,6 @@ const products: CatalogProduct[] = [
     id: "galleta-de-regalo",
     name: "Galleta de regalo con tarjeta",
     image: "/navidad/galleta-de-regalo.webp",
-    imagePosition: "object-[40%_50%]",
     category: "navidad",
     note: "Empacada con moño y tarjeta de Feliz Navidad (Para / De)",
     // Mismo precio en los dos sabores: el selector sirve para escoger el sabor.
